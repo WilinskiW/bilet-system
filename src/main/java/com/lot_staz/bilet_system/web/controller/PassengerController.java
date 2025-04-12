@@ -2,11 +2,15 @@ package com.lot_staz.bilet_system.web.controller;
 
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.service.PassengerService;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("api/passengers")
@@ -15,7 +19,11 @@ public class PassengerController {
     private final PassengerService passengerService;
 
     @PostMapping
-    public ResponseEntity<Void> addPassenger(@RequestBody PassengerDto passengerDto) {
+    public ResponseEntity<Void> addPassenger(@Valid @RequestBody PassengerDto passengerDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
+
         passengerService.create(passengerDto);
         return ResponseEntity.ok().build();
     }
@@ -26,7 +34,12 @@ public class PassengerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePassenger(@PathVariable Long id, @RequestBody PassengerDto passengerDto) {
+    public ResponseEntity<Void> updatePassenger(@PathVariable Long id, @Valid @RequestBody PassengerDto passengerDto,
+                                                BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
+
         passengerService.update(id, passengerDto);
         return ResponseEntity.ok().build();
     }

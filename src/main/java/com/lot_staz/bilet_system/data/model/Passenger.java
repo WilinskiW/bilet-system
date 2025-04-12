@@ -11,7 +11,7 @@ public class Passenger {
     private Long id;
 
     @Column(nullable = false)
-    private String firstName;
+    private String firstname;
 
     @Column(nullable = false)
     private String lastname;

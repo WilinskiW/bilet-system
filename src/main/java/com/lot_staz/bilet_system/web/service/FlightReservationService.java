@@ -16,11 +16,13 @@ import java.util.Optional;
 public class FlightReservationService {
     private final DbCataloger dbCataloger;
     private final FlightReservationMapper mapper;
+    private final EmailService emailService;
 
     @Transactional
     public void create(FlightReservationDto reservationDto) {
         verifyData(reservationDto);
         dbCataloger.getFlightReservationRepository().save(mapper.dtoToEntity(reservationDto));
+        emailService.sendEmail(reservationDto);
     }
 
     private void verifyData(FlightReservationDto reservationDto) {

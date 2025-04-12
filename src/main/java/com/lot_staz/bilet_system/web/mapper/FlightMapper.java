@@ -14,6 +14,7 @@ public class FlightMapper implements Mapper<Flight, FlightDto> {
                 flight.getArrivalPlace(),
                 flight.getDuration(),
                 flight.getFlightNumber(),
+                flight.getDepartureTime(),
                 flight.isRoundTrip()
         );
     }
@@ -27,6 +28,7 @@ public class FlightMapper implements Mapper<Flight, FlightDto> {
         flight.setArrivalPlace(dto.arrivalPlace());
         flight.setDuration(dto.duration());
         flight.setFlightNumber(dto.flightNumber());
+        flight.setDepartureTime(dto.departureTime());
         flight.setRoundTrip(dto.roundTrip());
 
         return flight;

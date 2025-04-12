@@ -6,9 +6,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.util.Date;
-
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -24,7 +21,7 @@ public class EmailService {
                         "Informacje o twoim bilecie: \n" +
                         "Numer rezerwacja: " + reservationDto.reservationNumber() + "\n" +
                         "Numer lotu: " + reservationDto.flight().flightNumber() + "\n" +
-                        "Data wylotu: " + Date.from(Instant.now()) //todo później zmienić na prawdziwą date
+                        "Data wylotu: " + reservationDto.flight().departureTime()
         );
 
         mailSender.send(message);

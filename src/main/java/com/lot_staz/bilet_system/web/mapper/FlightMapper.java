@@ -22,6 +22,7 @@ public class FlightMapper implements Mapper<Flight, FlightDto> {
     public Flight dtoToEntity(FlightDto dto) {
         Flight flight = new Flight();
 
+        flight.setId(dto.flightId());
         flight.setDeparturePlace(dto.departurePlace());
         flight.setArrivalPlace(dto.arrivalPlace());
         flight.setDuration(dto.duration());

@@ -31,7 +31,7 @@ public class FlightReservationMapper implements Mapper<FlightReservation, Flight
 
         reservation.setReservationNumber(dto.reservationNumber());
         reservation.setFlight(flightMapper.dtoToEntity(dto.flight()));
-        reservation.setSeatNumber(dto.reservationNumber());
+        reservation.setSeatNumber(dto.seatNumber());
         reservation.setPassenger(passengerMapper.dtoToEntity(dto.passenger()));
         reservation.setHasDeparted(dto.hasDeparted());
 

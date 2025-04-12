@@ -21,6 +21,7 @@ public class PassengerMapper implements Mapper<Passenger, PassengerDto> {
     public Passenger dtoToEntity(PassengerDto dto) {
         Passenger passenger = new Passenger();
 
+        passenger.setId(dto.passengerId());
         passenger.setFirstname(dto.firstname());
         passenger.setLastname(dto.lastname());
         passenger.setEmail(dto.email());

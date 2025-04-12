@@ -19,7 +19,7 @@ public class Flight {
     @Column(nullable = false)
     private Integer duration;
 
-    @Column(name = "flight_number", nullable = false)
+    @Column(name = "flight_number", nullable = false, unique = true)
     private String flightNumber;
 
     @Column(name = "round_trip", nullable = false)

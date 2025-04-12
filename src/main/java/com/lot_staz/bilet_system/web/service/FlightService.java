@@ -2,6 +2,9 @@ package com.lot_staz.bilet_system.web.service;
 
 import com.lot_staz.bilet_system.data.model.Flight;
 import com.lot_staz.bilet_system.data.repository.FlightRepository;
+import com.lot_staz.bilet_system.web.dto.FlightDto;
+import com.lot_staz.bilet_system.web.mapper.FlightMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,22 +14,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FlightService {
     private final FlightRepository flightRepository;
+    private final FlightMapper flightMapper;
 
-    public void create(Flight flight) {
-        flightRepository.save(flight);
+    @Transactional
+    public void create(FlightDto flightDto) {
+        flightRepository.save(flightMapper.dtoToEntity(flightDto));
     }
 
-    public List<Flight> getAllFlights() {
-        return flightRepository.findAll();
+    public List<FlightDto> getAllFlights() {
+        return flightMapper.entityListToDtoList(flightRepository.findAll());
     }
 
-    public void update(Long id, Flight flight) {
+    @Transactional
+    public void update(Long id, FlightDto flightDto) {
         if(!flightRepository.existsById(id)) {
             throw new RuntimeException("Flight not found");
         }
+
+        Flight flight = flightMapper.dtoToEntity(flightDto);
+        flight.setId(id);
+
         flightRepository.save(flight);
     }
 
+    @Transactional
     public void delete(Long id) {
         if(!flightRepository.existsById(id)) {
             throw new RuntimeException("Flight not found");

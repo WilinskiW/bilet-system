@@ -16,7 +16,7 @@ public class Passenger {
     @Column(nullable = false)
     private String lastname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)

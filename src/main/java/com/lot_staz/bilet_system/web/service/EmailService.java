@@ -2,6 +2,7 @@ package com.lot_staz.bilet_system.web.service;
 
 import com.lot_staz.bilet_system.web.dto.FlightReservationDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,13 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender mailSender;
 
+    @Value("${spring.mail.username}")
+    private String from;
+
     public void sendEmail(FlightReservationDto reservationDto) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("systembiletow.lot.staz@gmail.com");
+        System.out.println(from);
+        message.setFrom(from);
         message.setTo(reservationDto.passenger().email());
         message.setSubject("Rezerwacja biletów dla lotu: " + reservationDto.flight().flightNumber());
         message.setText(

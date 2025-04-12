@@ -47,13 +47,13 @@ public class FlightReservationService {
 
     @Transactional
     public void update(Long id, FlightReservationDto reservationDto) {
-        verifyData(reservationDto);
-
         Optional<FlightReservation> reservation = dbCataloger.getFlightReservationRepository().findById(id);
 
         if(reservation.isEmpty()){
             throw new DataNotFoundException("Flight reservation not found");
         }
+
+        verifyData(reservationDto);
 
         var flightReservation = reservation.get();
 

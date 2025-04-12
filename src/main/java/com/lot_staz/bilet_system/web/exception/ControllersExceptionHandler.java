@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class controllersExceptionHandler extends ResponseEntityExceptionHandler {
+public class ControllersExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ErrorResponseObject> handleDataNotFoundException (Exception ex){
         return getErrorResponse(ex, HttpStatus.NOT_FOUND);

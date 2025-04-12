@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +40,7 @@ public class FlightReservationMapperTest {
         Flight flight = new Flight();
         Passenger passenger = new Passenger();
         FlightDto flightDto = new FlightDto(1L, "TEST dep", "TEST arr",
-                100, "TSET", false);
+                100, "TSET", LocalDateTime.now(),false);
         PassengerDto passengerDto = new PassengerDto(1L, "Joe", "Doe", "joedoe@gmail.com",
                 "123456789");
 
@@ -64,7 +66,8 @@ public class FlightReservationMapperTest {
 
     @Test
     void dtoToEntityTest() {
-        FlightDto flightDto = new FlightDto(1L, "TEST dep", "TEST arr", 100, "TSET", false);
+        FlightDto flightDto = new FlightDto(1L, "TEST dep", "TEST arr", 100,
+                "TSET", LocalDateTime.now(),false);
         PassengerDto passengerDto = new PassengerDto(1L, "Joe", "Doe", "joedoe@gmail.com", "123456789");
         FlightReservationDto dto = new FlightReservationDto(
                 1L,

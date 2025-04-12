@@ -19,17 +19,21 @@ public class FlightReservationService {
 
     @Transactional
     public void create(FlightReservationDto reservationDto) {
-        checkExistenceOfData(reservationDto);
+        verifyData(reservationDto);
         dbCataloger.getFlightReservationRepository().save(mapper.dtoToEntity(reservationDto));
     }
 
-    private void checkExistenceOfData(FlightReservationDto reservationDto) {
+    private void verifyData(FlightReservationDto reservationDto) {
         if (!dbCataloger.getFlightRepository().existsById(reservationDto.flight().flightId())) {
             throw new RuntimeException("Flight not found");
         }
 
         if (!dbCataloger.getPassengerRepository().existsById(reservationDto.passenger().passengerId())) {
             throw new RuntimeException("Passenger not found");
+        }
+
+        if(dbCataloger.getFlightReservationRepository().existsBySeatNumber(reservationDto.seatNumber())) {
+           throw new RuntimeException("Seat number already in use");
         }
     }
 
@@ -39,7 +43,7 @@ public class FlightReservationService {
 
     @Transactional
     public void update(Long id, FlightReservationDto reservationDto) {
-        checkExistenceOfData(reservationDto);
+        verifyData(reservationDto);
 
         Optional<FlightReservation> reservation = dbCataloger.getFlightReservationRepository().findById(id);
 

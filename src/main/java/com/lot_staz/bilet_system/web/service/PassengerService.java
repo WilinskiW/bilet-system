@@ -3,6 +3,7 @@ package com.lot_staz.bilet_system.web.service;
 import com.lot_staz.bilet_system.data.model.Passenger;
 import com.lot_staz.bilet_system.data.repository.PassengerRepository;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
+import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.mapper.PassengerMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class PassengerService {
     @Transactional
     public void update(Long id, PassengerDto passengerDto) {
         if(!passengerRepository.existsById(id)) {
-            throw new RuntimeException("Passenger not found");
+            throw new DataNotFoundException("Passenger not found");
         }
 
         Passenger passenger = mapper.dtoToEntity(passengerDto);
@@ -40,7 +41,7 @@ public class PassengerService {
     @Transactional
     public void delete(Long id) {
         if(!passengerRepository.existsById(id)) {
-            throw new RuntimeException("Passenger not found");
+            throw new DataNotFoundException("Passenger not found");
         }
         passengerRepository.deleteById(id);
     }

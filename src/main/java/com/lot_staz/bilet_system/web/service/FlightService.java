@@ -3,6 +3,7 @@ package com.lot_staz.bilet_system.web.service;
 import com.lot_staz.bilet_system.data.model.Flight;
 import com.lot_staz.bilet_system.data.repository.FlightRepository;
 import com.lot_staz.bilet_system.web.dto.FlightDto;
+import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.mapper.FlightMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class FlightService {
     @Transactional
     public void update(Long id, FlightDto flightDto) {
         if(!flightRepository.existsById(id)) {
-            throw new RuntimeException("Flight not found");
+            throw new DataNotFoundException("Flight not found");
         }
 
         Flight flight = flightMapper.dtoToEntity(flightDto);
@@ -40,7 +41,7 @@ public class FlightService {
     @Transactional
     public void delete(Long id) {
         if(!flightRepository.existsById(id)) {
-            throw new RuntimeException("Flight not found");
+            throw new DataNotFoundException("Flight not found");
         }
         flightRepository.deleteById(id);
     }

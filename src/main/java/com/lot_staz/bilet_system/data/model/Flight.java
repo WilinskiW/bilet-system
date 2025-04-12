@@ -10,8 +10,8 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "destination_place", nullable = false)
-    private String destinationPlace;
+    @Column(name = "departure_place", nullable = false)
+    private String departurePlace;
 
     @Column(name = "arrival_place", nullable = false)
     private String arrivalPlace;

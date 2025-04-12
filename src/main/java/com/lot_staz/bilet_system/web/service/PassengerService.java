@@ -12,7 +12,7 @@ import java.util.List;
 public class PassengerService {
     private final PassengerRepository passengerRepository;
 
-    public void save(Passenger passenger) {
+    public void create(Passenger passenger) {
         passengerRepository.save(passenger);
     }
 

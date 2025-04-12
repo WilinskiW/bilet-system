@@ -16,7 +16,7 @@ public class PassengerController {
 
     @PostMapping()
     public ResponseEntity<Void> addPassenger(@RequestBody Passenger passenger) {
-        passengerService.save(passenger);
+        passengerService.create(passenger);
         return ResponseEntity.ok().build();
     }
 

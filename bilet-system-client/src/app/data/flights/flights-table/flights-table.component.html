@@ -1,3 +1,6 @@
+@if (isError()) {
+  <app-connection-error/>
+} @else if (!isFetching()) {
 <app-content-table>
   <ng-container table-headers>
     <th>ID</th>
@@ -30,3 +33,10 @@
     }
   </ng-container>
 </app-content-table>
+} @else {
+  <div class="d-flex justify-content-center mt-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only"></span>
+    </div>
+  </div>
+}

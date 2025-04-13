@@ -11,7 +11,7 @@
     <th>Email pasażera</th>
     <th>Nr. telefonu</th>
     <th>Czy wylot już się odbył?</th>
-    <th>Edytuj</th>
+    <th>Akcje</th>
   </ng-container>
   <ng-container table-body>
     @for (reservation of data; track reservation.reservationId) {
@@ -29,8 +29,8 @@
           <td><i class="bi bi-x-square"></i></td>
         }
         <td>
-          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(reservation.reservationId)">View
-            details</a>
+          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(reservation.reservationId)">Edytuj</a>
+          <a class="btn btn-danger text-white m-2 rounded-2" [routerLink]="String(reservation.reservationId)">Usuń</a>
         </td>
       </tr>
     }

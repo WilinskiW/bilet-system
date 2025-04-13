@@ -10,7 +10,7 @@
     <th>Nr. lotu</th>
     <th>Czas odlotu</th>
     <th>Lot w dwie strony</th>
-    <th>Edytuj</th>
+    <th>Akcje</th>
   </ng-container>
   <ng-container table-body>
     @for (flights of data; track flights.flightId) {
@@ -27,7 +27,8 @@
           <td><i class="bi bi-x-square"></i></td>
         }
         <td>
-          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(flights.flightNumber)">View details</a>
+          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(flights.flightNumber)">Edytuj</a>
+          <a class="btn btn-danger text-white m-2 rounded-2" [routerLink]="String(flights.flightNumber)">Usuń</a>
         </td>
       </tr>
     }

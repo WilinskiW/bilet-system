@@ -26,5 +26,18 @@ export abstract class DataTableService<T> implements OnInit {
       });
   }
 
+  delete(id: number | undefined){
+    if(!id){
+      return;
+    }
+
+    this.dataService.deleteData(`${this.url}/${id}`)
+      .subscribe({
+        complete: () => {
+          this.dataService.navigateTo("./")
+        }
+      })
+  }
+
   protected readonly String = String;
 }

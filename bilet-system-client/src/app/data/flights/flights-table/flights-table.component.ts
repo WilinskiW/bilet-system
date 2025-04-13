@@ -6,16 +6,18 @@ import { RouterLink } from '@angular/router';
 import {
   ConnectionErrorComponent
 } from '../../../shared/components/content-table/connection-error/connection-error.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-flights-table',
   imports: [
     ContentTableComponent,
     RouterLink,
-    ConnectionErrorComponent
+    ConnectionErrorComponent,
+    DatePipe
   ],
   templateUrl: './flights-table.component.html',
 })
-export class FlightsTableComponent extends DataTableService<FlightModel>{
-    protected url = "http://localhost:8080/api/flights"
+export class FlightsTableComponent extends DataTableService<FlightModel> {
+  protected url = "http://localhost:8080/api/flights"
 }

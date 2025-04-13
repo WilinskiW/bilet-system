@@ -17,7 +17,6 @@ public class EmailService {
 
     public void sendEmail(FlightReservationDto reservationDto) {
         SimpleMailMessage message = new SimpleMailMessage();
-        System.out.println(from);
         message.setFrom(from);
         message.setTo(reservationDto.passenger().email());
         message.setSubject("Rezerwacja biletów dla lotu: " + reservationDto.flight().flightNumber());

@@ -1,6 +1,8 @@
 package com.lot_staz.bilet_system.web.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public record FlightReservationDto(
         Long reservationId,
@@ -8,14 +10,17 @@ public record FlightReservationDto(
         @NotEmpty(message = "Reservation number is required")
         String reservationNumber,
 
-        @NotEmpty(message = "Flight can not be null")
+        @NotNull(message = "Flight can not be null")
+        @Valid
         FlightDto flight,
 
         @NotEmpty(message = "Seat number is required")
         String seatNumber,
 
-        @NotEmpty(message = "Passenger can not be null")
+        @NotNull(message = "Passenger can not be null")
+        @Valid
         PassengerDto passenger,
 
         boolean hasDeparted
-) { }
+) {
+}

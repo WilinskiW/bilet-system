@@ -1,13 +1,13 @@
 <app-content-table>
   <ng-container table-headers>
     <th>ID</th>
-    <th>Departure place</th>
-    <th>Arrival place</th>
-    <th>Duration (min)</th>
-    <th>Flight number</th>
-    <th>Departure time</th>
-    <th>Round trip</th>
-    <th>Details</th>
+    <th>Miejsce odlotu</th>
+    <th>Miejsce przylotu</th>
+    <th>Czas trwania (min)</th>
+    <th>Nr. lotu</th>
+    <th>Czas odlotu</th>
+    <th>Lot w dwie strony</th>
+    <th>Edytuj</th>
   </ng-container>
   <ng-container table-body>
     @for (flights of data; track flights.flightId) {
@@ -18,7 +18,11 @@
         <td>{{ flights.duration }}</td>
         <td>{{ flights.flightNumber }}</td>
         <td>{{ flights.departureTime }}</td>
-        <td>{{ flights.roundTrip }}</td>
+        @if (flights.roundTrip){
+          <td><i class="bi bi-check2-square"></i></td>
+        } @else {
+          <td><i class="bi bi-x-square"></i></td>
+        }
         <td>
           <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(flights.flightNumber)">View details</a>
         </td>

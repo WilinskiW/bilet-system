@@ -29,4 +29,18 @@ public class Flight {
 
     @Column(name = "round_trip", nullable = false)
     private boolean roundTrip;
+
+    public Flight(Long id, String departurePlace, String arrivalPlace, Integer duration, String flightNumber,
+                  LocalDateTime departureTime, boolean roundTrip) {
+        this.id = id;
+        this.departurePlace = departurePlace;
+        this.arrivalPlace = arrivalPlace;
+        this.duration = duration;
+        this.flightNumber = flightNumber;
+        this.departureTime = departureTime;
+        this.roundTrip = roundTrip;
+    }
+
+    public Flight() {
+    }
 }

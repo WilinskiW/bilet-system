@@ -5,7 +5,6 @@ import com.lot_staz.bilet_system.data.repository.PassengerRepository;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.mapper.PassengerMapper;
-import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,12 +19,14 @@ public class PassengerService {
 
     /**
      * Create new instance of passenger in database
+     *
      * @param passengerDto request body
+     * @throws IllegalArgumentException When passenger ID is not null when creating a new passenger
      */
     @Transactional
     public void create(PassengerDto passengerDto) {
-        if(passengerDto.passengerId() != null && passengerRepository.existsById(passengerDto.passengerId())) {
-            throw new EntityExistsException("Passenger with id " + passengerDto.passengerId() + " already exists");
+        if (passengerDto.passengerId() != null) {
+            throw new IllegalArgumentException("Passenger ID should be null when creating a new passenger");
         }
 
         passengerRepository.save(mapper.dtoToEntity(passengerDto));
@@ -33,6 +34,7 @@ public class PassengerService {
 
     /**
      * Get all passengers from database
+     *
      * @return List of passengers DTOs
      */
     public List<PassengerDto> getAllPassengers() {
@@ -41,30 +43,35 @@ public class PassengerService {
 
     /**
      * Update existing passenger using id and request body
-     * @param id ID of existing passenger
+     *
+     * @param id           ID of existing passenger
      * @param passengerDto Request body with new data to change
+     * @throws DataNotFoundException When passenger can't be found in database
      */
     @Transactional
     public void update(Long id, PassengerDto passengerDto) {
-        if(!passengerRepository.existsById(id)) {
-            throw new DataNotFoundException("Passenger not found");
-        }
+        Passenger existingPassenger = passengerRepository.findById(id).orElseThrow(() ->
+                new DataNotFoundException("Passenger not found"));
 
-        Passenger passenger = mapper.dtoToEntity(passengerDto);
-        passenger.setId(id);
+        existingPassenger.setFirstname(passengerDto.firstname());
+        existingPassenger.setLastname(passengerDto.lastname());
+        existingPassenger.setEmail(passengerDto.email());
+        existingPassenger.setPhone(passengerDto.phone());
 
-        passengerRepository.save(passenger);
+        passengerRepository.save(existingPassenger);
     }
 
     /**
      * Delete existing passenger by ID
+     *
      * @param id ID of passenger to delete
+     * @throws DataNotFoundException When passenger can't be found in database
      */
     @Transactional
     public void delete(Long id) {
-        if(!passengerRepository.existsById(id)) {
-            throw new DataNotFoundException("Passenger not found");
-        }
-        passengerRepository.deleteById(id);
+        Passenger existingPassenger = passengerRepository.findById(id).orElseThrow(() ->
+                new DataNotFoundException("Passenger not found"));
+
+        passengerRepository.delete(existingPassenger);
     }
 }

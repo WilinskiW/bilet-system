@@ -25,6 +25,11 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
         return getErrorResponse(ex, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseObject> handleIllegalArgumentException (Exception ex){
+        return getErrorResponse(ex, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<ErrorResponseObject> getErrorResponse(Exception ex, HttpStatus status){
         ErrorResponseObject error = new ErrorResponseObject(ex.getMessage(), status.value());
         return new ResponseEntity<>(error, status);

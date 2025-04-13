@@ -17,32 +17,63 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final FlightMapper flightMapper;
 
+    /**
+     * Create new instance of flight in database
+     *
+     * @param flightDto request body
+     * @throws IllegalArgumentException When flight ID is not null when creating a new flight
+     */
     @Transactional
     public void create(FlightDto flightDto) {
+        if (flightDto.flightId() != null) {
+            throw new IllegalArgumentException("Flight ID should be null when creating a new flight");
+        }
+
         flightRepository.save(flightMapper.dtoToEntity(flightDto));
     }
 
+    /**
+     * Get all flights from database
+     *
+     * @return List of flights DTOs
+     */
     public List<FlightDto> getAllFlights() {
         return flightMapper.entityListToDtoList(flightRepository.findAll());
     }
 
+    /**
+     * Update existing flight using id and request body
+     *
+     * @param id        ID of existing flight
+     * @param flightDto Request body with new data to change
+     * @throws DataNotFoundException When flight can't be found in database
+     */
     @Transactional
     public void update(Long id, FlightDto flightDto) {
-        if(!flightRepository.existsById(id)) {
-            throw new DataNotFoundException("Flight not found");
-        }
+        Flight existingFlight = flightRepository.findById(id).orElseThrow(() ->
+                new DataNotFoundException("Flight not found"));
 
-        Flight flight = flightMapper.dtoToEntity(flightDto);
-        flight.setId(id);
+        existingFlight.setFlightNumber(flightDto.flightNumber());
+        existingFlight.setDeparturePlace(flightDto.departurePlace());
+        existingFlight.setArrivalPlace(flightDto.arrivalPlace());
+        existingFlight.setDuration(flightDto.duration());
+        existingFlight.setDepartureTime(flightDto.departureTime());
+        existingFlight.setRoundTrip(flightDto.roundTrip());
 
-        flightRepository.save(flight);
+        flightRepository.save(existingFlight);
     }
 
+    /**
+     * Delete existing flight by ID
+     *
+     * @param id ID of flight to delete
+     * @throws DataNotFoundException When flight can't be found in database
+     */
     @Transactional
     public void delete(Long id) {
-        if(!flightRepository.existsById(id)) {
-            throw new DataNotFoundException("Flight not found");
-        }
-        flightRepository.deleteById(id);
+        Flight flight = flightRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Flight not found"));
+
+        flightRepository.delete(flight);
     }
 }

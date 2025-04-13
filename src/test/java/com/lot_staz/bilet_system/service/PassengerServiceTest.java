@@ -6,7 +6,6 @@ import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.mapper.PassengerMapper;
 import com.lot_staz.bilet_system.web.service.PassengerService;
-import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,12 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PassengerServiceTest {
@@ -44,20 +42,24 @@ public class PassengerServiceTest {
     }
 
     @Test
-    void createShouldThrowExceptionWhenPassengerAlreadyExists() {
-        when(passengerRepository.existsById(passengerDto.passengerId())).thenReturn(true);
-
-        assertThrows(EntityExistsException.class, () -> passengerService.create(this.passengerDto));
+    void createShouldThrowExceptionWhenPassengerIdIsNotNull() {
+        assertThrows(IllegalArgumentException.class, () -> passengerService.create(passengerDto));
+        verify(passengerRepository, never()).save(passenger);
     }
 
     @Test
     void createShouldSavePassengerWhenPassengerDoesNotExist() {
-        when(passengerRepository.existsById(passengerDto.passengerId())).thenReturn(false);
-        when(mapper.dtoToEntity(passengerDto)).thenReturn(passenger);
+        PassengerDto passengerDtoWithoutId = new PassengerDto(null, "Joe", "Doe",
+                "joe.doe@example.com", "123456789" );
 
-        passengerService.create(this.passengerDto);
+        Passenger mappedPassenger = new Passenger(null, "Joe", "Doe",
+                "joe.doe@example.com", "123456789" );
 
-        verify(passengerRepository).save(passenger);
+        when(mapper.dtoToEntity(passengerDtoWithoutId)).thenReturn(mappedPassenger);
+
+        passengerService.create(passengerDtoWithoutId);
+
+        verify(passengerRepository).save(mappedPassenger);
     }
 
     @Test
@@ -78,32 +80,44 @@ public class PassengerServiceTest {
 
     @Test
     void updateShouldThrowExceptionWhenPassengerDoesNotExist() {
-        when(passengerRepository.existsById(any())).thenReturn(false);
+        when(passengerRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(DataNotFoundException.class, () -> passengerService.update(1L, passengerDto));
     }
 
     @Test
     void updateShouldSavePassengerWhenPassengerDoesExist() {
-        when(passengerRepository.existsById(any())).thenReturn(true);
-        when(mapper.dtoToEntity(passengerDto)).thenReturn(passenger);
+        PassengerDto updatedDto = new PassengerDto(1L, "Bill", "Hill",
+                "bill.hill@example.com", "123456789");
 
-        passengerService.update(1L, passengerDto);
+        Passenger updatedPassenger = new Passenger(1L, "Bill", "Hill",
+                "bill.hill@example.com", "123456789");
 
-        verify(passengerRepository).save(passenger);
+        when(passengerRepository.findById(1L)).thenReturn(Optional.of(passenger));
+
+        passengerService.update(1L, updatedDto);
+
+        assertEquals("Bill", updatedDto.firstname());
+        assertEquals("Hill", updatedDto.lastname());
+        assertEquals("bill.hill@example.com", updatedDto.email());
+        assertEquals("123456789", updatedDto.phone());
+
+
+        verify(passengerRepository).save(updatedPassenger);
     }
 
     @Test
     void deleteShouldThrowExceptionWhenPassengerDoesNotExist() {
-        when(passengerRepository.existsById(any())).thenReturn(false);
+        when(passengerRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(DataNotFoundException.class, () -> passengerService.delete(1L));
     }
 
     @Test
     void deleteShouldDeletePassengerWhenPassengerDoesExist() {
-        when(passengerRepository.existsById(any())).thenReturn(true);
+        Passenger deletePassenger = new Passenger();
+        when(passengerRepository.findById(1L)).thenReturn(Optional.of(deletePassenger));
         passengerService.delete(1L);
-        verify(passengerRepository).deleteById(any());
+        verify(passengerRepository).delete(deletePassenger);
     }
 }

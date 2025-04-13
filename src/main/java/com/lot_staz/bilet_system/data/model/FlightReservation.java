@@ -26,4 +26,17 @@ public class FlightReservation {
 
     @Column(name = "has_departed")
     private boolean hasDeparted;
+
+    public FlightReservation(Long id, String reservationNumber, Flight flight, String seatNumber, Passenger passenger,
+                             boolean hasDeparted) {
+        this.id = id;
+        this.reservationNumber = reservationNumber;
+        this.flight = flight;
+        this.seatNumber = seatNumber;
+        this.passenger = passenger;
+        this.hasDeparted = hasDeparted;
+    }
+
+    public FlightReservation() {
+    }
 }

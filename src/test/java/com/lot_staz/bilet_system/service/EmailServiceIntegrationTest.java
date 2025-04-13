@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class EmailServiceTest {
+public class EmailServiceIntegrationTest {
 
     private GreenMail greenMail;
 

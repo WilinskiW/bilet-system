@@ -1,4 +1,4 @@
-import { FlightModel } from '../flights/FlightModel';
+import { FlightModel } from '../flights/flightModel';
 import { PassengerModel } from '../passengers/passenger.model';
 
 export interface ReservationModel {

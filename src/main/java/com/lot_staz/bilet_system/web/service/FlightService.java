@@ -41,6 +41,21 @@ public class FlightService {
         return flightMapper.entityListToDtoList(flightRepository.findAll());
     }
 
+
+    /**
+     * Get flight by ID
+     * @param id ID of flight to get
+     * @return FlightDto of search Flight
+     * @throws DataNotFoundException If flight doesn't exist
+     */
+    //todo dopisać testy
+    public FlightDto getFlight(Long id) {
+        Flight flight = flightRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Flight not found"));
+
+        return flightMapper.entityToDto(flight);
+    }
+
     /**
      * Update existing flight using id and request body
      *

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ContentTableComponent } from '../../../shared/components/content-table/content-table.component';
 import { DataTableService } from '../../../shared/abstract/data-table.service';
-import { FlightModel } from '../FlightModel';
+import { FlightModel } from '../flightModel';
 import { RouterLink } from '@angular/router';
 import {
   ConnectionErrorComponent

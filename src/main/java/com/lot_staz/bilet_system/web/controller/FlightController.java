@@ -33,6 +33,11 @@ public class FlightController {
         return ResponseEntity.ok(flightService.getAllFlights());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<FlightDto> getFlightById(@PathVariable Long id) {
+        return ResponseEntity.ok(flightService.getFlight(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateFlight(@PathVariable Long id, @Valid @RequestBody FlightDto flightDto,
                                              BindingResult bindingResult) {

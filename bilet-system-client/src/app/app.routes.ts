@@ -1,10 +1,15 @@
 import { Routes } from '@angular/router';
-import { PassengersComponent } from './data/passengers/passengers-table/passengers.component';
+import { PassengersTableComponent } from './data/passengers/passengers-table/passengers-table.component';
+import { FlightsTableComponent } from './data/flights/flights-table/flights-table.component';
 
 export const routes: Routes = [
   {
     path: "passengers",
-    component: PassengersComponent
+    component: PassengersTableComponent
+  },
+  {
+    path: "flights",
+    component: FlightsTableComponent
   },
   {
     path: "**",

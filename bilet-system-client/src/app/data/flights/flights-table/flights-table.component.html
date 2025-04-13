@@ -1,0 +1,28 @@
+<app-content-table>
+  <ng-container table-headers>
+    <th>ID</th>
+    <th>Departure place</th>
+    <th>Arrival place</th>
+    <th>Duration (min)</th>
+    <th>Flight number</th>
+    <th>Departure time</th>
+    <th>Round trip</th>
+    <th>Details</th>
+  </ng-container>
+  <ng-container table-body>
+    @for (flights of data; track flights.flightId) {
+      <tr>
+        <td>{{ flights.flightId }}</td>
+        <td>{{ flights.departurePlace }}</td>
+        <td>{{ flights.arrivalPlace}}</td>
+        <td>{{ flights.duration }}</td>
+        <td>{{ flights.flightNumber }}</td>
+        <td>{{ flights.departureTime }}</td>
+        <td>{{ flights.roundTrip }}</td>
+        <td>
+          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(flights.flightNumber)">View details</a>
+        </td>
+      </tr>
+    }
+  </ng-container>
+</app-content-table>

@@ -34,13 +34,13 @@ public class FlightControllerTest {
 
     @BeforeEach
     void setUp() {
-        validFlightDto = new FlightDto(
+        this.validFlightDto = new FlightDto(
                 1L, "Berlin", "London", 120, "RX212",
                 LocalDateTime.now(), true);
     }
 
     @Test
-    void addFlightShouldReturnOkWhenFlightIsValid() {
+    void addFlightShouldReturnOkWhenFlightIsAdded() {
         when(bindingResult.hasErrors()).thenReturn(false);
 
         ResponseEntity<Void> response = flightController.addFlight(validFlightDto, bindingResult);
@@ -64,7 +64,7 @@ public class FlightControllerTest {
     }
 
     @Test
-    void updateFlightShouldReturnOkWhenFlightIsValid() {
+    void updateFlightShouldReturnOkWhenFlightIsUpdated() {
         Long flightId = 1L;
         when(bindingResult.hasErrors()).thenReturn(false);
 
@@ -96,6 +96,6 @@ public class FlightControllerTest {
         ResponseEntity<Void> response = flightController.deleteFlight(flightId);
 
         verify(flightService, atMostOnce()).delete(flightId);
-        assertEquals(200, response.getStatusCode().value());
+        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 }

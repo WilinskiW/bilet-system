@@ -1,63 +1,62 @@
 <div class="container-fluid mt-4 d-flex justify-content-center align-items-center">
   <div class="col-md-6 col-lg-4">
-    <h1 class="text-center mb-4">Create new flight</h1>
+    <h1 class="text-center mb-4">Stwórz nowy lot</h1>
     <form [formGroup]="form" (ngSubmit)="submit()">
 
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="departurePlace" placeholder="Enter departure place"
+        <input type="text" class="form-control" id="departurePlace" placeholder="Podaj miejsce wylotu"
                formControlName="departurePlace" [class.is-invalid]="isInvalid('departurePlace')" required>
-        <label for="departurePlace">Departure Place</label>
+        <label for="departurePlace">Miejsce wylotu</label>
         @if (isInvalid("departurePlace")) {
-          <div class="invalid-feedback">Departure place is required!</div>
+          <div class="invalid-feedback">Miejsce wylotu jest wymagane i musi mieć co najmniej 3 znaki!</div>
         }
       </div>
 
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="arrivalPlace" placeholder="Enter arrival place"
+        <input type="text" class="form-control" id="arrivalPlace" placeholder="Podaj miejsce przylotu"
                formControlName="arrivalPlace" [class.is-invalid]="isInvalid('arrivalPlace')" required>
-        <label for="arrivalPlace">Arrival Place</label>
+        <label for="arrivalPlace">Miejsce przylotu</label>
         @if (isInvalid("arrivalPlace")) {
-          <div class="invalid-feedback">Arrival place is required!</div>
+          <div class="invalid-feedback">Miejsce przylotu jest wymagane i musi mieć co najmniej 3 znaki!</div>
         }
       </div>
 
       <div class="form-floating mb-3">
-        <input type="number" min="1" class="form-control" id="duration" placeholder="Enter flight duration"
+        <input type="number" min="1" class="form-control" id="duration" placeholder="Podaj czas trwania lotu"
                formControlName="duration" [class.is-invalid]="isInvalid('duration')" required>
-        <label for="duration">Duration (min)</label>
+        <label for="duration">Czas trwania (minuty)</label>
         @if (isInvalid("duration")) {
-          <div class="invalid-feedback">Duration is required and must be at least 1!</div>
+          <div class="invalid-feedback">Czas trwania jest wymagany i musi wynosić co najmniej 1 minutę!</div>
         }
       </div>
 
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="flightNumber" placeholder="Enter flight number"
+        <input type="text" class="form-control" id="flightNumber" placeholder="Podaj numer lotu"
                formControlName="flightNumber" [class.is-invalid]="isInvalid('flightNumber')" required>
-        <label for="flightNumber">Flight Number</label>
+        <label for="flightNumber">Numer lotu</label>
         @if (isInvalid("flightNumber")) {
-          <div class="invalid-feedback">Flight number is required!</div>
+          <div class="invalid-feedback">Numer lotu jest wymagany!</div>
         }
       </div>
 
       <div class="form-floating mb-3">
-        <input type="datetime-local" class="form-control" id="departureTime" placeholder="Enter departure time"
+        <input type="datetime-local" class="form-control" id="departureTime" placeholder="Podaj datę i godzinę wylotu"
                formControlName="departureTime" [class.is-invalid]="isInvalid('departureTime')" required>
-        <label for="departureTime">Departure Time</label>
+        <label for="departureTime">Data i godzina wylotu</label>
         @if (isInvalid("departureTime")) {
-          <div class="invalid-feedback">Departure time is required!</div>
+          <div class="invalid-feedback">Data i godzina wylotu są wymagane i muszą być teraźniejsze lub przyszłe!</div>
         }
       </div>
 
       <div class="form-check mb-3">
         <input type="checkbox" class="form-check-input" id="roundTrip" formControlName="roundTrip">
-        <label class="form-check-label" for="roundTrip">Round Trip</label>
+        <label class="form-check-label" for="roundTrip">Lot w obie strony</label>
       </div>
 
       <div class="d-grid gap-2">
-        <button class="btn btn-primary" type="submit">Save</button>
-        <a (click)="goBack(['flights'])" class="btn btn-outline-secondary">Back to Flights</a>
+        <button class="btn btn-primary" type="submit">Zapisz</button>
+        <a (click)="goBack(['flights'])" class="btn btn-outline-secondary">Powrót do listy lotów</a>
       </div>
-
     </form>
   </div>
 </div>

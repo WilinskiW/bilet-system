@@ -1,0 +1,63 @@
+<div class="container-fluid mt-4 d-flex justify-content-center align-items-center">
+  <div class="col-md-6 col-lg-4">
+    <h1 class="text-center mb-4">Create new flight</h1>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="departurePlace" placeholder="Enter departure place"
+               formControlName="departurePlace" [class.is-invalid]="isInvalid('departurePlace')" required>
+        <label for="departurePlace">Departure Place</label>
+        @if (isInvalid("departurePlace")) {
+          <div class="invalid-feedback">Departure place is required!</div>
+        }
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="arrivalPlace" placeholder="Enter arrival place"
+               formControlName="arrivalPlace" [class.is-invalid]="isInvalid('arrivalPlace')" required>
+        <label for="arrivalPlace">Arrival Place</label>
+        @if (isInvalid("arrivalPlace")) {
+          <div class="invalid-feedback">Arrival place is required!</div>
+        }
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="number" min="1" class="form-control" id="duration" placeholder="Enter flight duration"
+               formControlName="duration" [class.is-invalid]="isInvalid('duration')" required>
+        <label for="duration">Duration (min)</label>
+        @if (isInvalid("duration")) {
+          <div class="invalid-feedback">Duration is required and must be at least 1!</div>
+        }
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="flightNumber" placeholder="Enter flight number"
+               formControlName="flightNumber" [class.is-invalid]="isInvalid('flightNumber')" required>
+        <label for="flightNumber">Flight Number</label>
+        @if (isInvalid("flightNumber")) {
+          <div class="invalid-feedback">Flight number is required!</div>
+        }
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="datetime-local" class="form-control" id="departureTime" placeholder="Enter departure time"
+               formControlName="departureTime" [class.is-invalid]="isInvalid('departureTime')" required>
+        <label for="departureTime">Departure Time</label>
+        @if (isInvalid("departureTime")) {
+          <div class="invalid-feedback">Departure time is required!</div>
+        }
+      </div>
+
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="roundTrip" formControlName="roundTrip">
+        <label class="form-check-label" for="roundTrip">Round Trip</label>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a (click)="goBack(['flights'])" class="btn btn-outline-secondary">Back to Flights</a>
+      </div>
+
+    </form>
+  </div>
+</div>

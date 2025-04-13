@@ -1,5 +1,5 @@
 <main class="container mt-3">
-  <div class="d-flex justify-content-center">
+  <div class="d-flex flex-column justify-content-center">
     <table class="table table-hover table-dark table-striped text-white text-center justify-content-center m-1">
       <thead>
       <tr>
@@ -10,5 +10,6 @@
       <ng-content select="[table-body]"/>
       </tbody>
     </table>
+    <ng-content select="[table-footer]"/>
   </div>
 </main>

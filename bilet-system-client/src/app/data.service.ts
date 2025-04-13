@@ -19,7 +19,7 @@ export class DataService {
   }
 
   sendData<T>(body: object, url: string): Observable<T> {
-    return this.httpClient.post<T>(url, body, { withCredentials: true }).pipe(
+    return this.httpClient.post<T>(url, body).pipe(
       catchError((error) => {
         throw error;
       })
@@ -27,7 +27,7 @@ export class DataService {
   }
 
   putData<T>(body: object, url: string): Observable<T> {
-    return this.httpClient.put<T>(url, body, { withCredentials: true }).pipe(
+    return this.httpClient.put<T>(url, body).pipe(
       catchError((error) => {
         throw error;
       })
@@ -36,10 +36,14 @@ export class DataService {
 
   deleteData(url: string): Observable<void> {
     const apiUrl = url.replace("http://localhost:4200/wiki", "http://localhost:8081/api");
-    return this.httpClient.delete<void>(apiUrl, { withCredentials: true }).pipe(
+    return this.httpClient.delete<void>(apiUrl).pipe(
       catchError((error) => {
         throw error;
       })
     )
+  }
+
+  navigateTo(...args: string[]) {
+    this.router.navigate([...args]);
   }
 }

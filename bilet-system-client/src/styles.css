@@ -1,0 +1,6 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+body{
+  background-color: var(--bs-gray-dark);
+  color: var(--bs-white);
+}

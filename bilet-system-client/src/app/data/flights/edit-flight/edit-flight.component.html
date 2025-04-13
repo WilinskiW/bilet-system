@@ -1,6 +1,12 @@
-<div class="container-fluid mt-4 d-flex justify-content-center align-items-center">
+@if (errorCode() === 0) {
+  <app-connection-error/>
+} @else if(errorCode() === 404) {
+  <app-not-found/>
+}
+@else if (!isFetching()) {
+  <div class="container-fluid mt-4 d-flex justify-content-center align-items-center">
   <div class="col-md-6 col-lg-4">
-    <h1 class="text-center mb-4">Stwórz nowy lot</h1>
+    <h1 class="text-center mb-4">Edytuj istniejący lot</h1>
     <form [formGroup]="form" (ngSubmit)="submit()">
 
       <div class="form-floating mb-3">
@@ -60,3 +66,10 @@
     </form>
   </div>
 </div>
+} @else {
+  <div class="d-flex justify-content-center mt-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only"></span>
+    </div>
+  </div>
+}

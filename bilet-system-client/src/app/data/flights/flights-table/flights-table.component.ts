@@ -5,7 +5,7 @@ import { FlightModel } from '../flightModel';
 import { RouterLink } from '@angular/router';
 import {
   ConnectionErrorComponent
-} from '../../../shared/components/content-table/connection-error/connection-error.component';
+} from '../../../shared/components/connection-error/connection-error.component';
 import { DatePipe } from '@angular/common';
 
 @Component({

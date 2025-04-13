@@ -5,7 +5,7 @@ import { ReservationModel } from './reservation.model';
 import { RouterLink } from '@angular/router';
 import {
   ConnectionErrorComponent
-} from '../../shared/components/content-table/connection-error/connection-error.component';
+} from '../../shared/components/connection-error/connection-error.component';
 
 @Component({
   selector: 'app-reservations-table',

@@ -1,5 +1,5 @@
 export interface PassengerModel {
-  passengerId?: number,
+  id?: number,
   firstname: string,
   lastname: string,
   email: string,

@@ -14,9 +14,9 @@
     <th>Akcje</th>
   </ng-container>
   <ng-container table-body>
-    @for (reservation of data; track reservation.reservationId) {
+    @for (reservation of data(); track reservation.id) {
       <tr>
-        <td>{{ reservation.reservationId }}</td>
+        <td>{{ reservation.id }}</td>
         <td>{{ reservation.reservationNumber }}</td>
         <td>{{ reservation.flight.flightNumber }}</td>
         <td>{{ reservation.seatNumber }}</td>
@@ -29,8 +29,8 @@
           <td><i class="bi bi-x-square"></i></td>
         }
         <td>
-          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(reservation.reservationId)">Edytuj</a>
-          <a class="btn btn-danger text-white m-2 rounded-2" [routerLink]="String(reservation.reservationId)">Usuń</a>
+          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(reservation.id)">Edytuj</a>
+          <a class="btn btn-danger text-white m-2 rounded-2" [routerLink]="String(reservation.id)">Usuń</a>
         </td>
       </tr>
     }

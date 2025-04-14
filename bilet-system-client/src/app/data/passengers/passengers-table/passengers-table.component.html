@@ -11,16 +11,16 @@
     <th>Akcje</th>
   </ng-container>
   <ng-container table-body>
-    @for (passenger of data; track passenger.passengerId) {
+    @for (passenger of data(); track passenger.id) {
       <tr>
-        <td>{{ passenger.passengerId }}</td>
+        <td>{{ passenger.id }}</td>
         <td>{{ passenger.firstname }}</td>
         <td>{{ passenger.lastname}}</td>
         <td>{{ passenger.email }}</td>
         <td>{{ passenger.phone }}</td>
         <td>
-          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(passenger.passengerId)">Edytuj</a>
-          <a class="btn btn-danger text-white m-2 rounded-2" [routerLink]="String(passenger.passengerId)">Usuń</a>
+          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="'edit/' + String(passenger.id)">Edytuj</a>
+          <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(passenger.id)">Usuń</a>
         </td>
       </tr>
     }

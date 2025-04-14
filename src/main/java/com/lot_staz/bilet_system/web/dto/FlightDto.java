@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 public record FlightDto(
-        Long flightId,
+        Long id,
 
         @NotEmpty(message = "Departure place is required")
         String departurePlace,

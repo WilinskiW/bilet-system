@@ -107,7 +107,7 @@ public class FlightReservationTest {
 
         List<FlightReservationDto> result = service.getAllReservations();
         assertEquals(1, result.size());
-        assertEquals(1L, result.getFirst().reservationId());
+        assertEquals(1L, result.getFirst().id());
         assertEquals("RD12", result.getFirst().reservationNumber());
         assertEquals("10A", result.getLast().seatNumber());
         assertFalse(result.getFirst().hasDeparted());

@@ -33,7 +33,7 @@ public class FlightReservationValidator {
         checkExistence(reservationDto);
 
         // Check if the requested seat is already taken for this flight
-        if (reservationRepository.existsBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().flightId())) {
+        if (reservationRepository.existsBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().id())) {
             throw new SeatAlreadyTakenException("Seat number already in use");
         }
     }
@@ -46,12 +46,12 @@ public class FlightReservationValidator {
      */
     private void checkExistence(FlightReservationDto reservationDto) {
         // Check if the flight exists in the database
-        if (!flightRepository.existsById(reservationDto.flight().flightId())) {
+        if (!flightRepository.existsById(reservationDto.flight().id())) {
             throw new DataNotFoundException("Flight not found");
         }
 
         // Check if the passenger exists in the database
-        if (!passengerRepository.existsById(reservationDto.passenger().passengerId())) {
+        if (!passengerRepository.existsById(reservationDto.passenger().id())) {
             throw new DataNotFoundException("Passenger not found");
         }
     }
@@ -71,7 +71,7 @@ public class FlightReservationValidator {
 
         // Find if there is an existing reservation for the same seat and flight
         var existing = reservationRepository
-                .findBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().flightId());
+                .findBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().id());
 
         // If a reservation exists, and it is not the current one, throw an exception
         if (existing.isPresent() && !existing.get().getId().equals(existingReservationId)) {

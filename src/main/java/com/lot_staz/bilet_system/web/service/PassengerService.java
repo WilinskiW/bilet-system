@@ -25,7 +25,7 @@ public class PassengerService {
      */
     @Transactional
     public void create(PassengerDto passengerDto) {
-        if (passengerDto.passengerId() != null) {
+        if (passengerDto.id() != null) {
             throw new IllegalArgumentException("Passenger ID should be null when creating a new passenger");
         }
 

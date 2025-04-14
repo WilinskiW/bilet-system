@@ -9,7 +9,8 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes, withComponentInputBinding(),
       withRouterConfig({
-        paramsInheritanceStrategy: "always"
+        paramsInheritanceStrategy: "always",
+        onSameUrlNavigation: 'reload'
       })),
     provideHttpClient()]
 };

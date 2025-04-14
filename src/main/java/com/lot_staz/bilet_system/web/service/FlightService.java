@@ -25,7 +25,7 @@ public class FlightService {
      */
     @Transactional
     public void create(FlightDto flightDto) {
-        if (flightDto.flightId() != null) {
+        if (flightDto.id() != null) {
             throw new IllegalArgumentException("Flight ID should be null when creating a new flight");
         }
 

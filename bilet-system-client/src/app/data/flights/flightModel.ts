@@ -1,5 +1,5 @@
 export interface FlightModel{
-  flightId?: number,
+  id?: number,
   departurePlace: string,
   arrivalPlace: string,
   duration: number,

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 
 public record PassengerDto(
-        Long passengerId,
+        Long id,
 
         @NotEmpty(message = "Firstname is required")
         String firstname,

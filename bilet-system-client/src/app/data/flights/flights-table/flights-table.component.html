@@ -13,22 +13,22 @@
     <th>Akcje</th>
   </ng-container>
   <ng-container table-body>
-    @for (flights of data; track flights.flightId) {
+    @for (flight of data(); track flight.id) {
       <tr>
-        <td>{{ flights.flightId }}</td>
-        <td>{{ flights.departurePlace }}</td>
-        <td>{{ flights.arrivalPlace}}</td>
-        <td>{{ flights.duration }}</td>
-        <td>{{ flights.flightNumber }}</td>
-        <td>{{ flights.departureTime | date:"MMM dd, yyyy 'o' hh:mm" }}</td>
-        @if (flights.roundTrip){
+        <td>{{ flight.id }}</td>
+        <td>{{ flight.departurePlace }}</td>
+        <td>{{ flight.arrivalPlace}}</td>
+        <td>{{ flight.duration }}</td>
+        <td>{{ flight.flightNumber }}</td>
+        <td>{{ flight.departureTime | date:"MMM dd, yyyy 'o' hh:mm" }}</td>
+        @if (flight.roundTrip){
           <td><i class="bi bi-check2-square"></i></td>
         } @else {
           <td><i class="bi bi-x-square"></i></td>
         }
         <td>
-          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="'edit/' + String(flights.flightId)">Edytuj</a>
-          <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(flights.flightId)">Usuń</a>
+          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="'edit/' + String(flight.id)">Edytuj</a>
+          <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(flight.id)">Usuń</a>
         </td>
       </tr>
     }

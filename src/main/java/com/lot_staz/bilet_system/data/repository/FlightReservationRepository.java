@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface FlightReservationRepository extends JpaRepository<FlightReservation, Long> {
     @Query("SELECT COUNT(fr) > 0 FROM FlightReservation fr WHERE fr.seatNumber = :seatNumber AND fr.flight.id = :flightId")
-    boolean existsBySeatNumberAndFlightId(@Param("seatNumber") String seatNumber, @Param("flightId") Long flightId);
+    boolean existsBySeatNumberAndFlightId(@Param("seatNumber") String seatNumber, @Param("id") Long flightId);
 
     @Query("SELECT fr from FlightReservation fr WHERE  fr.seatNumber = :seatNumber AND fr.flight.id = :flightId")
-    Optional<FlightReservation> findBySeatNumberAndFlightId(@Param("seatNumber") String seatNumber, @Param("flightId") Long flightId);
+    Optional<FlightReservation> findBySeatNumberAndFlightId(@Param("seatNumber") String seatNumber, @Param("id") Long flightId);
 }

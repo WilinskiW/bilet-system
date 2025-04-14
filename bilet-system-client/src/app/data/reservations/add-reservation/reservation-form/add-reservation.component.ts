@@ -1,33 +1,23 @@
 import { Component, input, signal } from '@angular/core';
-import { DataForm } from '../../../../shared/abstract/data-form.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FlightModel } from '../../../flights/flightModel';
 import { PassengerModel } from '../../../passengers/passenger.model';
 import { ReservationModel } from '../../reservation.model';
+import { ReservationFormService } from '../../reservation-form.service';
 
 @Component({
   selector: 'app-reservation-form',
   imports: [
     ReactiveFormsModule
   ],
-  templateUrl: './reservation-form.component.html',
+  templateUrl: './add-reservation.component.html',
 })
-export class ReservationFormComponent extends DataForm{
-  form = new FormGroup({
-    reservationNumber: new FormControl("", {
-      validators: [Validators.required]
-    }),
-    seatNumber: new FormControl("", {
-      validators: [Validators.required, Validators.pattern(new RegExp("^[1-9][0-9]*[A-F]$"))]
-    }),
-    hasDeparted: new FormControl(false)
-  })
-
+export class AddReservationComponent extends ReservationFormService{
   flight = input.required<FlightModel | undefined>();
   passenger = input.required<PassengerModel | null>();
   waiting = signal(false);
 
-  submit(): void {
+  override submit(): void {
     if (this.form.invalid) {
       this.formService.markAllControlsAsTouched(this.form);
       return;
@@ -54,5 +44,4 @@ export class ReservationFormComponent extends DataForm{
         },
       })
   }
-
 }

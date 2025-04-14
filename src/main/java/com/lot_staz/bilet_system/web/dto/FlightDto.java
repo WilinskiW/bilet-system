@@ -19,7 +19,6 @@ public record FlightDto(
         @NotEmpty(message = "Flight number is required")
         String flightNumber,
 
-        @FutureOrPresent
         LocalDateTime departureTime,
 
         boolean roundTrip

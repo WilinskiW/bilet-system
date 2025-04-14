@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlightModel } from '../flightModel';
-import { FlightFormService } from '../flightForm.service';
+import { FlightFormService } from '../flight-form.service';
 
 @Component({
   selector: 'app-add-flight',

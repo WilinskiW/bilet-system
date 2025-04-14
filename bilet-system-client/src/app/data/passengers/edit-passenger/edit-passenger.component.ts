@@ -1,6 +1,6 @@
 import { Component, input, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PassengerFormService } from '../passengerForm.service';
+import { PassengerFormService } from '../passenger-form.service';
 import { PassengerModel } from '../passenger.model';
 import { ConnectionErrorComponent } from '../../../shared/components/connection-error/connection-error.component';
 import { NotFoundComponent } from '../../../shared/components/not-found/not-found.component';

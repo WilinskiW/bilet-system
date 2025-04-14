@@ -5,7 +5,8 @@ import { ReservationsTableComponent } from './data/reservations/reservations-tab
 import { AddFlightComponent } from './data/flights/add-flight/add-flight.component';
 import { EditFlightComponent } from './data/flights/edit-flight/edit-flight.component';
 import { EditPassengerComponent } from './data/passengers/edit-passenger/edit-passenger.component';
-import { AddReservationComponent } from './data/reservations/add-reservation/add-reservation.component';
+import { ReservationFormComponent } from './data/reservations/add-reservation/reservation-form.component';
+import { EditReservationComponent } from './data/reservations/edit-reservation/edit-reservation.component';
 
 export const routes: Routes = [
   {
@@ -34,7 +35,11 @@ export const routes: Routes = [
   },
   {
     path: "reservations/add/:id",
-    component: AddReservationComponent
+    component: ReservationFormComponent
+  },
+  {
+    path: "reservations/edit/:id",
+    component: EditReservationComponent
   },
   {
     path: "**",

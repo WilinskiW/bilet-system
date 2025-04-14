@@ -9,6 +9,5 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
     SidebarComponent
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
 })
 export class AppComponent { }

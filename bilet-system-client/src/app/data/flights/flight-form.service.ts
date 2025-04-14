@@ -1,14 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataForm } from '../../shared/abstract/data-form.service';
-
-function mustBeInTheFutureOrPresent(dateControl: AbstractControl) {
-  const controlDate = Date.parse(dateControl.value);
-  if (controlDate >= Date.now()) {
-    return null;
-  }
-  return { isInThePast: true };
-}
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +20,7 @@ export abstract class FlightFormService extends DataForm{
       validators: [Validators.required]
     }),
     departureTime: new FormControl("", {
-      validators: [Validators.required, mustBeInTheFutureOrPresent]
+      validators: [Validators.required]
     }),
     roundTrip: new FormControl(false)
   });

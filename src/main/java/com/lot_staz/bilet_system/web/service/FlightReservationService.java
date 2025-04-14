@@ -45,6 +45,14 @@ public class FlightReservationService {
         return mapper.entityListToDtoList(reservationRepository.findAll());
     }
 
+    public FlightReservationDto getReservation(Long id) {
+        FlightReservation reservation = reservationRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Reservation not found")
+        );
+
+        return mapper.entityToDto(reservation);
+    }
+
     /**
      * Updates an existing flight reservation by the given ID.
      * If the reservation is found, the provided data will update the existing reservation.

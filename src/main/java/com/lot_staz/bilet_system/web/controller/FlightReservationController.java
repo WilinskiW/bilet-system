@@ -35,6 +35,11 @@ public class FlightReservationController {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<FlightReservationDto> getReservationById(@PathVariable Long id) {
+        return ResponseEntity.ok(reservationService.getReservation(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateReservation(@PathVariable Long id, @Valid @RequestBody FlightReservationDto reservationDto,
                                                   BindingResult bindingResult) {

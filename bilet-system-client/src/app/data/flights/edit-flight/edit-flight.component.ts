@@ -1,7 +1,7 @@
 import { Component, input, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlightModel } from '../flightModel';
-import { FlightFormService } from '../flightForm.service';
+import { FlightFormService } from '../flight-form.service';
 import { ConnectionErrorComponent } from '../../../shared/components/connection-error/connection-error.component';
 import { NotFoundComponent } from '../../../shared/components/not-found/not-found.component';
 

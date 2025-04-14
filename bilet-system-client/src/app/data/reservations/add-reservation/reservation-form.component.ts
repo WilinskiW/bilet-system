@@ -1,13 +1,13 @@
 import { Component, input, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DataForm } from '../../../shared/abstract/data-form.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlightModel } from '../../flights/flightModel';
 import { DatePipe } from '@angular/common';
 import { AddPassengerComponent } from './add-passanger/add-passenger.component';
-import { ReservationFormComponent } from './reservation-form/reservation-form.component';
+import { AddReservationComponent } from './reservation-form/add-reservation.component';
 import { PassengerModel } from '../../passengers/passenger.model';
 import { ConnectionErrorComponent } from '../../../shared/components/connection-error/connection-error.component';
 import { NotFoundComponent } from '../../../shared/components/not-found/not-found.component';
+import { ReservationFormService } from '../reservation-form.service';
 
 @Component({
   selector: 'app-add-reservation',
@@ -16,27 +16,13 @@ import { NotFoundComponent } from '../../../shared/components/not-found/not-foun
     ReactiveFormsModule,
     DatePipe,
     AddPassengerComponent,
-    ReservationFormComponent,
     ConnectionErrorComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    AddReservationComponent
   ],
-  templateUrl: './add-reservation.component.html',
+  templateUrl: './reservation-form.component.html',
 })
-export class AddReservationComponent extends DataForm implements OnInit {
-  form = new FormGroup({
-    firstname: new FormControl("", {
-      validators: [Validators.required]
-    }),
-    lastname: new FormControl("", {
-      validators: [Validators.required]
-    }),
-    email: new FormControl("", {
-      validators: [Validators.required, Validators.email]
-    }),
-    phone: new FormControl("", {
-      validators: [Validators.required, Validators.pattern(new RegExp("\\+[1-9][0-9]{0,2}[0-9]{7,12}$"))]
-    }),
-  });
+export class ReservationFormComponent extends ReservationFormService implements OnInit {
   flight: FlightModel | undefined;
   id = input.required<string>();
   isFetching = signal(true);
@@ -59,9 +45,6 @@ export class AddReservationComponent extends DataForm implements OnInit {
           else if (err.status === 404) this.errorCode.set(404)
         }
       });
-  }
-
-  submit(): void {
   }
 
   handlePassengerValidation(passenger: PassengerModel | null) {

@@ -1,6 +1,6 @@
 import { Component, output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PassengerFormService } from '../../../passengers/passengerForm.service';
+import { PassengerFormService } from '../../../passengers/passenger-form.service';
 import { PassengerModel } from '../../../passengers/passenger.model';
 
 @Component({

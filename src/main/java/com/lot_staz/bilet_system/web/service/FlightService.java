@@ -5,6 +5,7 @@ import com.lot_staz.bilet_system.data.repository.FlightRepository;
 import com.lot_staz.bilet_system.web.dto.FlightDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.mapper.FlightMapper;
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,10 @@ public class FlightService {
     public void create(FlightDto flightDto) {
         if (flightDto.id() != null) {
             throw new IllegalArgumentException("Flight ID should be null when creating a new flight");
+        }
+
+        if(flightRepository.existsFlightByFlightNumber(flightDto.flightNumber())){
+            throw new EntityExistsException("Flight with this flight number already exists");
         }
 
         flightRepository.save(flightMapper.dtoToEntity(flightDto));

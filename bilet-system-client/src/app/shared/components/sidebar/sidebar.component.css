@@ -1,11 +1,12 @@
 aside {
+  position: sticky;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
-  flex-wrap: nowrap;
   height: 100vh;
   box-shadow: 20px 0 15px -24px #212529;
-  max-height: 100vh;
+  background-color: #212529;
   overflow-x: auto;
   overflow-y: hidden;
-  background-color: #212529;
 }

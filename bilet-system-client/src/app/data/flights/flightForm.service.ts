@@ -34,7 +34,10 @@ export abstract class FlightFormService extends DataForm{
   });
 
   submit() {
-    this.markAllFieldsAsTouched();
+    if (this.form.invalid) {
+      this.formService.markAllControlsAsTouched(this.form);
+      return;
+    }
 
     const flight = {
       departurePlace: this.form.controls.departurePlace.value,

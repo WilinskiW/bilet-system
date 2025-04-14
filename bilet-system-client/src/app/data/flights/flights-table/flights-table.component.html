@@ -27,6 +27,7 @@
           <td><i class="bi bi-x-square"></i></td>
         }
         <td>
+          <a class="btn bg-primary-subtle text-white m-2 rounded-2" [routerLink]="'../reservations/add/' + String(flight.id)">Zarezerwuj lot</a>
           <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="'edit/' + String(flight.id)">Edytuj</a>
           <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(flight.id)">Usuń</a>
         </td>

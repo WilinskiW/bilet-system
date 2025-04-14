@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class FlightReservationValidator {
 
     private final FlightRepository flightRepository;
-    private final PassengerRepository passengerRepository;
     private final FlightReservationRepository reservationRepository;
 
     /**
@@ -30,29 +29,14 @@ public class FlightReservationValidator {
      * @throws SeatAlreadyTakenException If the requested seat is already taken.
      */
     public void checkIfValid(FlightReservationDto reservationDto) {
-        checkExistence(reservationDto);
-
-        // Check if the requested seat is already taken for this flight
-        if (reservationRepository.existsBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().id())) {
-            throw new SeatAlreadyTakenException("Seat number already in use");
-        }
-    }
-
-    /**
-     * Checks if the flight and passenger referenced in the reservation data exist in the database.
-     *
-     * @param reservationDto The flight reservation data containing the flight and passenger details.
-     * @throws DataNotFoundException If no matching flight or passenger is found in the database.
-     */
-    private void checkExistence(FlightReservationDto reservationDto) {
         // Check if the flight exists in the database
         if (!flightRepository.existsById(reservationDto.flight().id())) {
             throw new DataNotFoundException("Flight not found");
         }
 
-        // Check if the passenger exists in the database
-        if (!passengerRepository.existsById(reservationDto.passenger().id())) {
-            throw new DataNotFoundException("Passenger not found");
+        // Check if the requested seat is already taken for this flight
+        if (reservationRepository.existsBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().id())) {
+            throw new SeatAlreadyTakenException("Seat number already in use");
         }
     }
 

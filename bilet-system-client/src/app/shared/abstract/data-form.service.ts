@@ -18,11 +18,4 @@ export abstract class DataForm {
   goBack(section: string[]) {
     this.dataService.navigateTo(...section);
   }
-
-  markAllFieldsAsTouched(){
-    if (this.form.invalid) {
-      this.formService.markAllControlsAsTouched(this.form);
-      return;
-    }
-  }
 }

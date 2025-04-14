@@ -1,0 +1,42 @@
+<h2 class="card-title text-center mb-4">Dodaj pasażera do lotu</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="form-floating mb-3">
+    <input type="text" class="form-control" id="firstname" placeholder="Podaj imię"
+           formControlName="firstname" [class.is-invalid]="isInvalid('firstname')" required>
+    <label for="firstname">Imię</label>
+    @if (isInvalid("firstname")) {
+      <div class="invalid-feedback">Imię jest wymagane!</div>
+    }
+  </div>
+
+  <div class="form-floating mb-3">
+    <input type="text" class="form-control" id="lastname" placeholder="Podaj nazwisko"
+           formControlName="lastname" [class.is-invalid]="isInvalid('lastname')" required>
+    <label for="lastname">Nazwisko</label>
+    @if (isInvalid("lastname")) {
+      <div class="invalid-feedback">Nazwisko jest wymagane!</div>
+    }
+  </div>
+
+  <div class="form-floating mb-3">
+    <input type="email" class="form-control" id="email" placeholder="Podaj adres e-mail"
+           formControlName="email" [class.is-invalid]="isInvalid('email')">
+    <label for="email">Adres e-mail</label>
+    @if (isInvalid("email")) {
+      <div class="invalid-feedback">Adres e-mail musi być poprawny!</div>
+    }
+  </div>
+
+  <div class="form-floating mb-3">
+    <input type="tel" class="form-control" id="phone" placeholder="Podaj numer telefonu"
+           formControlName="phone" [class.is-invalid]="isInvalid('phone')">
+    <label for="phone">Numer telefonu</label>
+    @if (isInvalid("phone")) {
+      <div class="invalid-feedback">Numer telefonu musi być w formacie np. +48123456789</div>
+    }
+  </div>
+  <div class="d-grid gap-2">
+    <button class="btn btn-primary" type="submit">Przejdź dalej</button>
+    <a (click)="goBack(['flights'])" class="btn btn-outline-secondary">Powrót do lotów</a>
+  </div>
+</form>

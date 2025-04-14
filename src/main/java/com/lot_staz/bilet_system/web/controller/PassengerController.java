@@ -54,4 +54,12 @@ public class PassengerController {
         passengerService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/verify")
+    public ResponseEntity<Void> verifyPassenger(@Valid @RequestBody PassengerDto passengerDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
 }

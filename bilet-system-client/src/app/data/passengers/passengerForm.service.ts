@@ -22,7 +22,10 @@ export abstract class PassengerFormService extends DataForm{
   })
 
   submit(): void {
-    this.markAllFieldsAsTouched();
+    if (this.form.invalid) {
+      this.formService.markAllControlsAsTouched(this.form);
+      return;
+    }
 
     const passenger = {
       firstname: this.form.controls.firstname.value,

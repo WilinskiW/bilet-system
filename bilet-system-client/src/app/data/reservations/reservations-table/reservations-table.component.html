@@ -30,7 +30,7 @@
         }
         <td>
           <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="String(reservation.id)">Edytuj</a>
-          <a class="btn btn-danger text-white m-2 rounded-2" [routerLink]="String(reservation.id)">Usuń</a>
+          <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(reservation.id)">Usuń</a>
         </td>
       </tr>
     }

@@ -1,71 +1,74 @@
 @if (errorCode() === 0) {
   <app-connection-error/>
-} @else if(errorCode() === 404) {
+} @else if (errorCode() === 404) {
   <app-not-found/>
-}
-@else if (!isFetching()) {
+} @else if (!isFetching()) {
   <div class="container-fluid mt-4 d-flex justify-content-center align-items-center">
-  <div class="col-md-6 col-lg-4">
-    <h1 class="text-center mb-4">Edytuj istniejący lot</h1>
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="card shadow-lg p-4 col-md-6 col-lg-5">
+      <div class="card-body">
+        <h1 class="card-title text-center mb-4">Edytuj informacje o locie</h1>
+        <form [formGroup]="form" (ngSubmit)="submit()">
 
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="departurePlace" placeholder="Podaj miejsce wylotu"
-               formControlName="departurePlace" [class.is-invalid]="isInvalid('departurePlace')" required>
-        <label for="departurePlace">Miejsce wylotu</label>
-        @if (isInvalid("departurePlace")) {
-          <div class="invalid-feedback">Miejsce wylotu jest wymagane i musi mieć co najmniej 3 znaki!</div>
-        }
-      </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="departurePlace" placeholder="Podaj miejsce wylotu"
+                   formControlName="departurePlace" [class.is-invalid]="isInvalid('departurePlace')" required>
+            <label for="departurePlace">Miejsce wylotu</label>
+            @if (isInvalid("departurePlace")) {
+              <div class="invalid-feedback">Miejsce wylotu jest wymagane i musi mieć co najmniej 3 znaki!</div>
+            }
+          </div>
 
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="arrivalPlace" placeholder="Podaj miejsce przylotu"
-               formControlName="arrivalPlace" [class.is-invalid]="isInvalid('arrivalPlace')" required>
-        <label for="arrivalPlace">Miejsce przylotu</label>
-        @if (isInvalid("arrivalPlace")) {
-          <div class="invalid-feedback">Miejsce przylotu jest wymagane i musi mieć co najmniej 3 znaki!</div>
-        }
-      </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="arrivalPlace" placeholder="Podaj miejsce przylotu"
+                   formControlName="arrivalPlace" [class.is-invalid]="isInvalid('arrivalPlace')" required>
+            <label for="arrivalPlace">Miejsce przylotu</label>
+            @if (isInvalid("arrivalPlace")) {
+              <div class="invalid-feedback">Miejsce przylotu jest wymagane i musi mieć co najmniej 3 znaki!</div>
+            }
+          </div>
 
-      <div class="form-floating mb-3">
-        <input type="number" min="1" class="form-control" id="duration" placeholder="Podaj czas trwania lotu"
-               formControlName="duration" [class.is-invalid]="isInvalid('duration')" required>
-        <label for="duration">Czas trwania (minuty)</label>
-        @if (isInvalid("duration")) {
-          <div class="invalid-feedback">Czas trwania jest wymagany i musi wynosić co najmniej 1 minutę!</div>
-        }
-      </div>
+          <div class="form-floating mb-3">
+            <input type="number" min="1" class="form-control" id="duration" placeholder="Podaj czas trwania lotu"
+                   formControlName="duration" [class.is-invalid]="isInvalid('duration')" required>
+            <label for="duration">Czas trwania (minuty)</label>
+            @if (isInvalid("duration")) {
+              <div class="invalid-feedback">Czas trwania jest wymagany i musi wynosić co najmniej 1 minutę!</div>
+            }
+          </div>
 
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="flightNumber" placeholder="Podaj numer lotu"
-               formControlName="flightNumber" [class.is-invalid]="isInvalid('flightNumber')" required>
-        <label for="flightNumber">Numer lotu</label>
-        @if (isInvalid("flightNumber")) {
-          <div class="invalid-feedback">Numer lotu jest wymagany!</div>
-        }
-      </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="flightNumber" placeholder="Podaj numer lotu"
+                   formControlName="flightNumber" [class.is-invalid]="isInvalid('flightNumber')" required>
+            <label for="flightNumber">Numer lotu</label>
+            @if (isInvalid("flightNumber")) {
+              <div class="invalid-feedback">Numer lotu jest wymagany!</div>
+            }
+          </div>
 
-      <div class="form-floating mb-3">
-        <input type="datetime-local" class="form-control" id="departureTime" placeholder="Podaj datę i godzinę wylotu"
-               formControlName="departureTime" [class.is-invalid]="isInvalid('departureTime')" required>
-        <label for="departureTime">Data i godzina wylotu</label>
-        @if (isInvalid("departureTime")) {
-          <div class="invalid-feedback">Data i godzina wylotu są wymagane i muszą być teraźniejsze lub przyszłe!</div>
-        }
-      </div>
+          <div class="form-floating mb-3">
+            <input type="datetime-local" class="form-control" id="departureTime"
+                   placeholder="Podaj datę i godzinę wylotu"
+                   formControlName="departureTime" [class.is-invalid]="isInvalid('departureTime')" required>
+            <label for="departureTime">Data i godzina wylotu</label>
+            @if (isInvalid("departureTime")) {
+              <div class="invalid-feedback">Data i godzina wylotu są wymagane i muszą być teraźniejsze lub przyszłe!
+              </div>
+            }
+          </div>
 
-      <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input" id="roundTrip" formControlName="roundTrip">
-        <label class="form-check-label" for="roundTrip">Lot w obie strony</label>
-      </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="roundTrip" formControlName="roundTrip">
+            <label class="form-check-label" for="roundTrip">Lot w obie strony</label>
+          </div>
 
-      <div class="d-grid gap-2">
-        <button class="btn btn-primary" type="submit">Zapisz</button>
-        <a (click)="goBack(['flights'])" class="btn btn-outline-secondary">Powrót do listy lotów</a>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="submit">Zapisz</button>
+            <a (click)="goBack(['flights'])" class="btn btn-outline-secondary">Powrót do listy lotów</a>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
-</div>
 } @else {
   <div class="d-flex justify-content-center mt-4">
     <div class="spinner-border text-primary" role="status">

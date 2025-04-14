@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,6 +27,9 @@ public class Flight {
 
     @Column(name = "departure_time", nullable = false)
     private LocalDateTime departureTime;
+
+    @OneToMany(mappedBy = "flight")
+    private List<FlightReservation> flightReservations;
 
     @Column(name = "round_trip", nullable = false)
     private boolean roundTrip;

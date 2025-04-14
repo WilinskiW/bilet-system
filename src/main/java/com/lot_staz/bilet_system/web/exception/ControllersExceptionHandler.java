@@ -30,6 +30,11 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
         return getErrorResponse(ex, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(SeatAlreadyTakenException.class)
+    public ResponseEntity<ErrorResponseObject> handleSetAlreadyTakenException(Exception ex){
+        return getErrorResponse(ex, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseObject> handleException (Exception ex){
         return getErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);

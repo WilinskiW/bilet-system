@@ -18,4 +18,6 @@ public interface FlightReservationRepository extends JpaRepository<FlightReserva
 
     @Query("SELECT p FROM FlightReservation p WHERE p.passenger.id = :id")
     Optional<FlightReservation> findPassengerById(@Param("id") Long id);
+
+    FlightReservation findByReservationNumber(String reservationNumber);
 }

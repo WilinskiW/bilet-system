@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { DataForm } from '../../shared/abstract/data-form.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
-export abstract class ReservationFormService extends DataForm{
+export abstract class ReservationFormService extends DataForm {
   form = new FormGroup({
     reservationNumber: new FormControl("", {
       validators: [Validators.required]
@@ -15,6 +15,8 @@ export abstract class ReservationFormService extends DataForm{
     }),
     hasDeparted: new FormControl(false)
   })
+  errorMessage = signal("");
+
 
   submit(): void {
   }

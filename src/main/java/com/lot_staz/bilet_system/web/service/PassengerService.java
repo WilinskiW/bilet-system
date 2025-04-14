@@ -1,6 +1,5 @@
 package com.lot_staz.bilet_system.web.service;
 
-import com.lot_staz.bilet_system.data.model.FlightReservation;
 import com.lot_staz.bilet_system.data.model.Passenger;
 import com.lot_staz.bilet_system.data.repository.FlightReservationRepository;
 import com.lot_staz.bilet_system.data.repository.PassengerRepository;
@@ -85,12 +84,7 @@ public class PassengerService {
      */
     @Transactional
     public void delete(Long id) {
-        FlightReservation reservation = reservationRepository.findPassengerById(id).orElseThrow(() ->
-                new DataNotFoundException("Flight reservation not found")
-        );
-
-        reservationRepository.delete(reservation);
-
+        reservationRepository.findPassengerById(id).ifPresent(reservationRepository::delete);
         passengerRepository.deleteById(id);
     }
 }

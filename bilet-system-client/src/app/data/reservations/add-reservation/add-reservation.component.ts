@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlightModel } from '../../flights/flightModel';
 import { DatePipe } from '@angular/common';
 import { AddPassengerComponent } from './add-passanger/add-passenger.component';
-import { AddReservationComponent } from './reservation-form/add-reservation.component';
+import { ReservationForm } from './reservation-form/reservetion-form.component';
 import { PassengerModel } from '../../passengers/passenger.model';
 import { ConnectionErrorComponent } from '../../../shared/components/connection-error/connection-error.component';
 import { NotFoundComponent } from '../../../shared/components/not-found/not-found.component';
@@ -18,11 +18,11 @@ import { ReservationFormService } from '../reservation-form.service';
     AddPassengerComponent,
     ConnectionErrorComponent,
     NotFoundComponent,
-    AddReservationComponent
+    ReservationForm
   ],
-  templateUrl: './reservation-form.component.html',
+  templateUrl: './add-reservation.component.html',
 })
-export class ReservationFormComponent extends ReservationFormService implements OnInit {
+export class AddReservation extends ReservationFormService implements OnInit {
   flight: FlightModel | undefined;
   id = input.required<string>();
   isFetching = signal(true);

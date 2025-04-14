@@ -65,6 +65,9 @@ export class EditReservationComponent extends ReservationFormService implements 
         complete: () => {
           this.goBack(["reservations"])
         },
+        error: (err) => {
+          this.errorMessage.set(err.error.message);
+        }
       })
   }
 }

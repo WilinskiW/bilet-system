@@ -65,31 +65,31 @@ public class FlightReservationTest {
     void createShouldSaveReservationWhenEverythingIsOk() {
         service.create(validReservationDto);
 
-        verify(validator, atMostOnce()).checkIfValid(validReservationDto);
+        verify(validator, atMostOnce()).checkIfValidForCreate(validReservationDto);
         verify(reservationRepository, atMostOnce()).save(mapper.dtoToEntity(validReservationDto));
         verify(emailService, atMostOnce()).sendEmail(validReservationDto);
     }
 
     @Test
     void createShouldStopExecutingWhenValidationFails() {
-        doThrow(new SeatAlreadyTakenException("Seat already in use")).when(validator).checkIfValid(validReservationDto);
+        doThrow(new SeatAlreadyTakenException("Seat already in use")).when(validator).checkIfValidForCreate(validReservationDto);
 
         try {
             service.create(validReservationDto);
         } catch (SeatAlreadyTakenException ex) {
             assertEquals("Seat already in use", ex.getMessage());
-            verify(validator, atMostOnce()).checkIfValid(validReservationDto);
+            verify(validator, atMostOnce()).checkIfValidForCreate(validReservationDto);
             verify(reservationRepository, never()).save(mapper.dtoToEntity(validReservationDto));
             verify(emailService, never()).sendEmail(validReservationDto);
         }
 
         Mockito.clearInvocations(validator);
-        doThrow(new DataNotFoundException("Flight not found")).when(validator).checkIfValid(validReservationDto);
+        doThrow(new DataNotFoundException("Flight not found")).when(validator).checkIfValidForCreate(validReservationDto);
         try {
             service.create(validReservationDto);
         } catch (DataNotFoundException ex) {
             assertEquals("Flight not found", ex.getMessage());
-            verify(validator, atMostOnce()).checkIfValid(validReservationDto);
+            verify(validator, atMostOnce()).checkIfValidForCreate(validReservationDto);
             verify(reservationRepository, never()).save(mapper.dtoToEntity(validReservationDto));
             verify(emailService, never()).sendEmail(validReservationDto);
         }
@@ -125,7 +125,7 @@ public class FlightReservationTest {
         service.update(1L, validReservationDto);
 
         verify(reservationRepository, atMostOnce()).save(updatedReservation);
-        verify(validator, atMostOnce()).checkIfValid(validReservationDto, 1L);
+        verify(validator, atMostOnce()).checkIfValidForUpdate(validReservationDto, 1L);
     }
 
     @Test

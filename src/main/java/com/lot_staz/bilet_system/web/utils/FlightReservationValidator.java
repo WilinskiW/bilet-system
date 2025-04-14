@@ -1,11 +1,12 @@
 package com.lot_staz.bilet_system.web.utils;
 
+import com.lot_staz.bilet_system.data.model.FlightReservation;
 import com.lot_staz.bilet_system.data.repository.FlightRepository;
 import com.lot_staz.bilet_system.data.repository.FlightReservationRepository;
-import com.lot_staz.bilet_system.data.repository.PassengerRepository;
 import com.lot_staz.bilet_system.web.dto.FlightReservationDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.exception.SeatAlreadyTakenException;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +29,8 @@ public class FlightReservationValidator {
      * @throws DataNotFoundException If the flight or passenger cannot be found.
      * @throws SeatAlreadyTakenException If the requested seat is already taken.
      */
-    public void checkIfValid(FlightReservationDto reservationDto) {
-        // Check if the flight exists in the database
-        if (!flightRepository.existsById(reservationDto.flight().id())) {
-            throw new DataNotFoundException("Flight not found");
-        }
+    public void checkIfValidForCreate(FlightReservationDto reservationDto) {
+        check(reservationDto);
 
         // Check if the requested seat is already taken for this flight
         if (reservationRepository.existsBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().id())) {
@@ -42,7 +40,7 @@ public class FlightReservationValidator {
 
     /**
      * Checks if the reservation data is valid for updating an existing reservation.
-     * This method performs the same checks as {@link #checkIfValid(FlightReservationDto)}, but also
+     * This method performs the same checks as {@link #checkIfValidForCreate(FlightReservationDto)}, but also
      * ensures that the seat is not taken by another reservation.
      *
      * @param reservationDto The updated flight reservation data.
@@ -50,8 +48,8 @@ public class FlightReservationValidator {
      * @throws DataNotFoundException If the flight or passenger cannot be found.
      * @throws SeatAlreadyTakenException If the requested seat is taken by another reservation.
      */
-    public void checkIfValid(FlightReservationDto reservationDto, Long existingReservationId) {
-        checkIfValid(reservationDto);
+    public void checkIfValidForUpdate(FlightReservationDto reservationDto, Long existingReservationId) {
+        check(reservationDto);
 
         // Find if there is an existing reservation for the same seat and flight
         var existing = reservationRepository
@@ -60,6 +58,18 @@ public class FlightReservationValidator {
         // If a reservation exists, and it is not the current one, throw an exception
         if (existing.isPresent() && !existing.get().getId().equals(existingReservationId)) {
             throw new SeatAlreadyTakenException("Seat number already in use");
+        }
+    }
+
+    private void check(FlightReservationDto reservationDto){
+        // Check if the flight exists in the database
+        if (!flightRepository.existsById(reservationDto.flight().id())) {
+            throw new DataNotFoundException("Flight not found");
+        }
+
+        FlightReservation reservation = reservationRepository.findByReservationNumber(reservationDto.reservationNumber());
+        if(reservation != null && !reservation.getId().equals(reservationDto.id())) {
+            throw new EntityExistsException("Reservation number already exists");
         }
     }
 }

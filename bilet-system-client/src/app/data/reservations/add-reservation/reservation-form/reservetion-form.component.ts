@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlightModel } from '../../../flights/flightModel';
 import { PassengerModel } from '../../../passengers/passenger.model';
@@ -10,12 +10,11 @@ import { ReservationFormService } from '../../reservation-form.service';
   imports: [
     ReactiveFormsModule
   ],
-  templateUrl: './add-reservation.component.html',
+  templateUrl: './reservetion-form.component.html',
 })
-export class AddReservationComponent extends ReservationFormService{
+export class ReservationForm extends ReservationFormService{
   flight = input.required<FlightModel | undefined>();
   passenger = input.required<PassengerModel | null>();
-  waiting = signal(false);
 
   override submit(): void {
     if (this.form.invalid) {
@@ -37,11 +36,12 @@ export class AddReservationComponent extends ReservationFormService{
 
     this.dataService.sendData(reservation, `http://localhost:8080/api/reservations`)
       .subscribe({
-        next: () => this.waiting.set(true),
         complete: () => {
-          this.waiting.set(false);
           this.goBack(["reservations"])
         },
+        error: (err) => {
+          this.errorMessage.set(err.error.message);
+        }
       })
   }
 }

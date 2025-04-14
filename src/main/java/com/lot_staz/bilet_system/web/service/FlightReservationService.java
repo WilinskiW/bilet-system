@@ -30,7 +30,7 @@ public class FlightReservationService {
      */
     @Transactional
     public void create(FlightReservationDto reservationDto) {
-        validator.checkIfValid(reservationDto);
+        validator.checkIfValidForCreate(reservationDto);
         reservationRepository.save(mapper.dtoToEntity(reservationDto));
         emailService.sendEmail(reservationDto);
     }
@@ -68,7 +68,7 @@ public class FlightReservationService {
                 () -> new DataNotFoundException("Flight reservation not found")
         );
 
-        validator.checkIfValid(reservationDto, id);
+        validator.checkIfValidForUpdate(reservationDto, id);
 
         existingReservation.setReservationNumber(reservationDto.reservationNumber());
         existingReservation.setSeatNumber(reservationDto.seatNumber());

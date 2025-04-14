@@ -1,41 +1,46 @@
 @if (isError()) {
   <app-connection-error/>
 } @else if (!isFetching()) {
-<app-content-table>
-  <ng-container table-headers>
-    <th>ID</th>
-    <th>Nr. rezerwacji</th>
-    <th>Nr. lotu</th>
-    <th>Nr. miejsca</th>
-    <th>Pasażer</th>
-    <th>Email pasażera</th>
-    <th>Nr. telefonu</th>
-    <th>Czy wylot już się odbył?</th>
-    <th>Akcje</th>
-  </ng-container>
-  <ng-container table-body>
-    @for (reservation of data(); track reservation.id) {
-      <tr>
-        <td>{{ reservation.id }}</td>
-        <td>{{ reservation.reservationNumber }}</td>
-        <td>{{ reservation.flight.flightNumber }}</td>
-        <td>{{ reservation.seatNumber }}</td>
-        <td>{{ reservation.passenger.firstname + ' ' + reservation.passenger.lastname }}</td>
-        <td>{{ reservation.passenger.email }}</td>
-        <td>{{ reservation.passenger.phone }}</td>
-        @if (reservation.hasDeparted){
-          <td><i class="bi bi-check2-square"></i></td>
-        } @else {
-          <td><i class="bi bi-x-square"></i></td>
+  @if (data().length > 0) {
+    <app-content-table>
+      <ng-container table-headers>
+        <th>ID</th>
+        <th>Nr. rezerwacji</th>
+        <th>Nr. lotu</th>
+        <th>Nr. miejsca</th>
+        <th>Pasażer</th>
+        <th>Email pasażera</th>
+        <th>Nr. telefonu</th>
+        <th>Czy wylot już się odbył?</th>
+        <th>Akcje</th>
+      </ng-container>
+      <ng-container table-body>
+        @for (reservation of data(); track reservation.id) {
+          <tr>
+            <td>{{ reservation.id }}</td>
+            <td>{{ reservation.reservationNumber }}</td>
+            <td>{{ reservation.flight.flightNumber }}</td>
+            <td>{{ reservation.seatNumber }}</td>
+            <td>{{ reservation.passenger.firstname + ' ' + reservation.passenger.lastname }}</td>
+            <td>{{ reservation.passenger.email }}</td>
+            <td>{{ reservation.passenger.phone }}</td>
+            @if (reservation.hasDeparted) {
+              <td><i class="bi bi-check2-square"></i></td>
+            } @else {
+              <td><i class="bi bi-x-square"></i></td>
+            }
+            <td>
+              <a class="btn btn-primary text-white m-2 rounded-2"
+                 [routerLink]="'edit/' + String(reservation.id)">Edytuj</a>
+              <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(reservation.id)">Usuń</a>
+            </td>
+          </tr>
         }
-        <td>
-          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="'edit/' + String(reservation.id)">Edytuj</a>
-          <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(reservation.id)">Usuń</a>
-        </td>
-      </tr>
-    }
-  </ng-container>
-</app-content-table>
+      </ng-container>
+    </app-content-table>
+  } @else {
+    <app-zero-data infoText="Żadna rezerwacja nie została zarejestrowana"/>
+  }
 } @else {
   <div class="d-flex justify-content-center mt-4">
     <div class="spinner-border text-primary" role="status">

@@ -1,31 +1,36 @@
 @if (isError()) {
   <app-connection-error/>
 } @else if (!isFetching()) {
-<app-content-table>
-  <ng-container table-headers>
-    <th>ID</th>
-    <th>Imię</th>
-    <th>Nazwisko</th>
-    <th>Email</th>
-    <th>Nr. telefonu</th>
-    <th>Akcje</th>
-  </ng-container>
-  <ng-container table-body>
-    @for (passenger of data(); track passenger.id) {
-      <tr>
-        <td>{{ passenger.id }}</td>
-        <td>{{ passenger.firstname }}</td>
-        <td>{{ passenger.lastname}}</td>
-        <td>{{ passenger.email }}</td>
-        <td>{{ passenger.phone }}</td>
-        <td>
-          <a class="btn btn-primary text-white m-2 rounded-2" [routerLink]="'edit/' + String(passenger.id)">Edytuj</a>
-          <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(passenger.id)">Usuń</a>
-        </td>
-      </tr>
-    }
-  </ng-container>
-</app-content-table>
+  @if (data().length > 0) {
+    <app-content-table>
+      <ng-container table-headers>
+        <th>ID</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Email</th>
+        <th>Nr. telefonu</th>
+        <th>Akcje</th>
+      </ng-container>
+      <ng-container table-body>
+        @for (passenger of data(); track passenger.id) {
+          <tr>
+            <td>{{ passenger.id }}</td>
+            <td>{{ passenger.firstname }}</td>
+            <td>{{ passenger.lastname }}</td>
+            <td>{{ passenger.email }}</td>
+            <td>{{ passenger.phone }}</td>
+            <td>
+              <a class="btn btn-primary text-white m-2 rounded-2"
+                 [routerLink]="'edit/' + String(passenger.id)">Edytuj</a>
+              <a class="btn btn-danger text-white m-2 rounded-2" (click)="delete(passenger.id)">Usuń</a>
+            </td>
+          </tr>
+        }
+      </ng-container>
+    </app-content-table>
+  } @else {
+    <app-zero-data infoText="Żadna rezerwacja nie została zarejestrowana"/>
+  }
 } @else {
   <div class="d-flex justify-content-center mt-4">
     <div class="spinner-border text-primary" role="status">

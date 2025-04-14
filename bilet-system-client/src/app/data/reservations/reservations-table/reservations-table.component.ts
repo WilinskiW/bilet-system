@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import {
   ConnectionErrorComponent
 } from '../../../shared/components/connection-error/connection-error.component';
+import { ZeroDataComponent } from '../../../shared/components/zero-data/zero-data.component';
 
 @Component({
   selector: 'app-reservations-table',
@@ -13,7 +14,8 @@ import {
   imports: [
     ContentTableComponent,
     RouterLink,
-    ConnectionErrorComponent
+    ConnectionErrorComponent,
+    ZeroDataComponent
   ]
 })
 export class ReservationsTableComponent extends DataTableService<ReservationModel>{

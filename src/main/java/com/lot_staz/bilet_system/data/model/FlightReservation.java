@@ -20,7 +20,7 @@ public class FlightReservation {
     @Column(name = "seat_number", nullable = false)
     private String seatNumber;
 
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    @OneToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 

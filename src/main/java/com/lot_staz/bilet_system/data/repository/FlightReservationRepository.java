@@ -13,6 +13,9 @@ public interface FlightReservationRepository extends JpaRepository<FlightReserva
     @Query("SELECT COUNT(fr) > 0 FROM FlightReservation fr WHERE fr.seatNumber = :seatNumber AND fr.flight.id = :id")
     boolean existsBySeatNumberAndFlightId(@Param("seatNumber") String seatNumber, @Param("id") Long id);
 
-    @Query("SELECT fr from FlightReservation fr WHERE  fr.seatNumber = :seatNumber AND fr.flight.id = :id")
+    @Query("SELECT fr FROM FlightReservation fr WHERE  fr.seatNumber = :seatNumber AND fr.flight.id = :id")
     Optional<FlightReservation> findBySeatNumberAndFlightId(@Param("seatNumber") String seatNumber, @Param("id") Long id);
+
+    @Query("SELECT p FROM FlightReservation p WHERE p.passenger.id = :id")
+    Optional<FlightReservation> findPassengerById(@Param("id") Long id);
 }

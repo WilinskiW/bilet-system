@@ -42,6 +42,18 @@ public class PassengerService {
     }
 
     /**
+     * Get passenger by ID
+     * @param id Passenger ID
+     * @return PassengerDto of search Passenger
+     */
+    public PassengerDto getPassenger(Long id) {
+        Passenger passenger = passengerRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Passenger not found")
+        );
+        return mapper.entityToDto(passenger);
+    }
+
+    /**
      * Update existing passenger using id and request body
      *
      * @param id           ID of existing passenger

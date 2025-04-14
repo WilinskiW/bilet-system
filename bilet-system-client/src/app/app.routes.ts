@@ -4,11 +4,16 @@ import { FlightsTableComponent } from './data/flights/flights-table/flights-tabl
 import { ReservationsTableComponent } from './data/reservations/reservations-table.component';
 import { AddFlightComponent } from './data/flights/add-flight/add-flight.component';
 import { EditFlightComponent } from './data/flights/edit-flight/edit-flight.component';
+import { EditPassengerComponent } from './data/passengers/edit-passenger/edit-passenger.component';
 
 export const routes: Routes = [
   {
     path: "passengers",
     component: PassengersTableComponent
+  },
+  {
+    path: "passengers/edit/:id",
+    component: EditPassengerComponent,
   },
   {
     path: "flights",

@@ -33,6 +33,11 @@ public class PassengerController {
         return ResponseEntity.ok(passengerService.getAllPassengers());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PassengerDto> getPassengerById(@PathVariable Long id) {
+        return ResponseEntity.ok(passengerService.getPassenger(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePassenger(@PathVariable Long id, @Valid @RequestBody PassengerDto passengerDto,
                                                 BindingResult bindingResult) {

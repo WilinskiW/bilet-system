@@ -21,19 +21,13 @@ public class FlightMapperTest {
     @Test
     void entityToDtoTest() {
         LocalDateTime departureTime = LocalDateTime.now();
-
-        Flight flight = new Flight();
-        flight.setId(1L);
-        flight.setDeparturePlace("Berlin");
-        flight.setArrivalPlace("London");
-        flight.setDuration(100);
-        flight.setFlightNumber("123");
-        flight.setDepartureTime(departureTime);
-        flight.setRoundTrip(true);
-
-        FlightDto flightDto = flightMapper.entityToDto(flight);
         FlightDto correctDto = new FlightDto(1L, "Berlin", "London", 100,
                 "123", departureTime, true);
+
+        Flight flight = new Flight(1L, "Berlin", "London",
+                100, "123", departureTime, true);
+
+        FlightDto flightDto = flightMapper.entityToDto(flight);
 
         assertEquals(correctDto, flightDto);
     }
@@ -41,19 +35,14 @@ public class FlightMapperTest {
     @Test
     void dtoToEntityTest() {
         LocalDateTime departureTime = LocalDateTime.now();
+        Flight correctFlight = new Flight(1L, "Berlin", "London",
+                100, "123", departureTime, true);
 
         FlightDto flightDto = new FlightDto(1L, "Berlin", "London", 100,
                 "123", departureTime, true);
+
         Flight flight = flightMapper.dtoToEntity(flightDto);
 
-        Flight correctFlight = new Flight();
-        correctFlight.setId(1L);
-        correctFlight.setDeparturePlace("Berlin");
-        correctFlight.setArrivalPlace("London");
-        correctFlight.setDuration(100);
-        correctFlight.setFlightNumber("123");
-        correctFlight.setDepartureTime(departureTime);
-        correctFlight.setRoundTrip(true);
 
         assertEquals(correctFlight, flight);
     }

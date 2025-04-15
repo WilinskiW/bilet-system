@@ -18,12 +18,8 @@ public class PassengerMapperTest {
 
     @Test
     void entityToDtoTest() {
-        Passenger entityPassenger = new Passenger();
-        entityPassenger.setId(1L);
-        entityPassenger.setFirstname("John");
-        entityPassenger.setLastname("Doe");
-        entityPassenger.setEmail("john@doe.com");
-        entityPassenger.setPhone("1234567890");
+        Passenger entityPassenger =
+                new Passenger(1L, "John", "Doe", "joedoe@gmail.com", "123456789");
 
         PassengerDto dto = passengerMapper.entityToDto(entityPassenger);
         PassengerDto correctDto = new PassengerDto(1L, "John", "Doe", "john@doe.com", "1234567890");
@@ -36,12 +32,7 @@ public class PassengerMapperTest {
         PassengerDto dto = new PassengerDto(1L, "John", "Doe", "john@doe.com", "1234567890");
         Passenger passenger = passengerMapper.dtoToEntity(dto);
 
-        Passenger correctPassenger = new Passenger();
-        correctPassenger.setId(1L);
-        correctPassenger.setFirstname("John");
-        correctPassenger.setLastname("Doe");
-        correctPassenger.setEmail("john@doe.com");
-        correctPassenger.setPhone("1234567890");
+        Passenger correctPassenger = new Passenger(1L, "John", "Doe", "john@doe.com", "1234567890");
 
         assertEquals(correctPassenger, passenger);
     }

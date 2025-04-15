@@ -40,34 +40,31 @@ public class FlightReservationMapperTest {
         Flight flight = new Flight();
         Passenger passenger = new Passenger();
         FlightDto flightDto = new FlightDto(1L, "TEST dep", "TEST arr",
-                100, "TSET", LocalDateTime.now(),false);
+                100, "TSET", LocalDateTime.now(), false);
         PassengerDto passengerDto = new PassengerDto(1L, "Joe", "Doe", "joedoe@gmail.com",
                 "123456789");
 
-        FlightReservation flightReservation = new FlightReservation();
-        flightReservation.setId(1L);
-        flightReservation.setReservationNumber("TEST RESERVATION");
-        flightReservation.setFlight(flight);
-        flightReservation.setSeatNumber("TEST SEAT NUMBER");
-        flightReservation.setPassenger(passenger);
-        flightReservation.setHasDeparted(false);
+        FlightReservation flightReservation = new FlightReservation(1L,
+                "TEST RESERVATION", flight, "TEST SEAT NUMBER", passenger, false );
 
         when(flightMapper.entityToDto(flight)).thenReturn(flightDto);
         when(passengerMapper.entityToDto(passenger)).thenReturn(passengerDto);
 
         FlightReservationDto dto = flightReservationMapper.entityToDto(flightReservation);
 
-        assertEquals("TEST RESERVATION", dto.reservationNumber());
-        assertEquals("TEST SEAT NUMBER", dto.seatNumber());
-        assertEquals(flightDto, dto.flight());
-        assertEquals(passengerDto, dto.passenger());
-        assertFalse(dto.hasDeparted());
+        assertAll(
+                () -> assertEquals("TEST RESERVATION", dto.reservationNumber()),
+                () -> assertEquals("TEST SEAT NUMBER", dto.seatNumber()),
+                () -> assertEquals(flightDto, dto.flight()),
+                () -> assertEquals(passengerDto, dto.passenger()),
+                () -> assertFalse(dto.hasDeparted())
+        );
     }
 
     @Test
     void dtoToEntityTest() {
         FlightDto flightDto = new FlightDto(1L, "TEST dep", "TEST arr", 100,
-                "TSET", LocalDateTime.now(),false);
+                "TSET", LocalDateTime.now(), false);
         PassengerDto passengerDto = new PassengerDto(1L, "Joe", "Doe", "joedoe@gmail.com", "123456789");
         FlightReservationDto dto = new FlightReservationDto(
                 1L,
@@ -78,30 +75,22 @@ public class FlightReservationMapperTest {
                 true
         );
 
-        Flight flight = new Flight();
-        flight.setId(1L);
-        flight.setDeparturePlace("TEST dep");
-        flight.setArrivalPlace("TEST arr");
-        flight.setFlightNumber("TSET");
-        flight.setDuration(100);
-        flight.setRoundTrip(false);
+        Flight flight = new Flight(1L, "TEST dep", "TEST arr", 100,
+                "TSET", LocalDateTime.now(), false);
 
-        Passenger passenger = new Passenger();
-        passenger.setId(1L);
-        passenger.setFirstname("Joe");
-        passenger.setLastname("Doe");
-        passenger.setEmail("joedoe@gmail.com");
-        passenger.setPhone("123456789");
+        Passenger passenger = new Passenger(1L, "Joe", "Doe", "joedoe@gmail.com", "123456789");
 
         when(flightMapper.dtoToEntity(flightDto)).thenReturn(flight);
         when(passengerMapper.dtoToEntity(passengerDto)).thenReturn(passenger);
 
         FlightReservation reservation = flightReservationMapper.dtoToEntity(dto);
 
-        assertEquals("TEST RESERVATION", reservation.getReservationNumber());
-        assertEquals("TEST SEAT NUMBER", reservation.getSeatNumber());
-        assertEquals(flight, reservation.getFlight());
-        assertEquals(passenger, reservation.getPassenger());
-        assertTrue(reservation.isHasDeparted());
+        assertAll(
+                () -> assertEquals("TEST RESERVATION", reservation.getReservationNumber()),
+                () -> assertEquals("TEST SEAT NUMBER", reservation.getSeatNumber()),
+                () -> assertEquals(flight, reservation.getFlight()),
+                () -> assertEquals(passenger, reservation.getPassenger()),
+                () -> assertTrue(reservation.isHasDeparted())
+        );
     }
 }

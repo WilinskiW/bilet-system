@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -40,11 +42,17 @@ public class PassengerControllerTest {
     @Test
     void addPassengerShouldReturnOkWhenPassengerIsAdded() {
         when(bindingResult.hasErrors()).thenReturn(false);
+        when(passengerService.create(validPassengerDto)).thenReturn(1L);
 
         ResponseEntity<OkResponseDto> response = passengerController.addPassenger(validPassengerDto, bindingResult);
 
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Passenger was added!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
+
         verify(passengerService, atMostOnce()).create(validPassengerDto);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
     @Test
@@ -54,12 +62,35 @@ public class PassengerControllerTest {
                 new FieldError("passengerDto", "firstname", "Firstname is required")
         );
 
-        ValidationException thrown = assertThrows(ValidationException.class,
-                () -> passengerController.addPassenger(null, bindingResult)
+        assertEquals("Firstname is required", assertThrows(ValidationException.class,
+                () -> passengerController.addPassenger(null, bindingResult)).getMessage()
         );
 
-        assertEquals("Firstname is required", thrown.getMessage());
         verify(passengerService, never()).create(validPassengerDto);
+    }
+
+
+    @Test
+    void getAllPassengersShouldReturnListOfPassengerDtos() {
+        when(passengerService.getAllPassengers()).thenReturn(List.of(validPassengerDto, validPassengerDto));
+
+        ResponseEntity<List<PassengerDto>> response = passengerController.getAllPassengers();
+        assertAll(
+                () -> assertEquals(2, response.getBody().size()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
+    }
+
+    @Test
+    void getPassengerByIdShouldReturnPassengerDto() {
+        when(passengerService.getPassenger(1L)).thenReturn(validPassengerDto);
+
+        ResponseEntity<PassengerDto> response = passengerController.getPassengerById(1L);
+
+        assertAll(
+                () -> assertEquals(validPassengerDto, response.getBody()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
     }
 
     @Test
@@ -69,8 +100,13 @@ public class PassengerControllerTest {
 
         ResponseEntity<OkResponseDto> response = passengerController.updatePassenger(passengerId, validPassengerDto, bindingResult);
 
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Passenger with id: 1 was updated!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
+
         verify(passengerService, atMostOnce()).update(passengerId, validPassengerDto);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
     @Test
@@ -83,11 +119,10 @@ public class PassengerControllerTest {
                 new FieldError("passengerDto", "email", "Email is incorrect")
         );
 
-        ValidationException thrown = assertThrows(ValidationException.class,
-                () -> passengerController.updatePassenger(passengerId, mockPassenger, bindingResult)
+        assertEquals("Email is incorrect", assertThrows(ValidationException.class,
+                () -> passengerController.updatePassenger(passengerId, mockPassenger, bindingResult)).getMessage()
         );
 
-        assertEquals("Email is incorrect", thrown.getMessage());
         verify(passengerService, never()).update(passengerId, validPassengerDto);
     }
 
@@ -97,7 +132,12 @@ public class PassengerControllerTest {
 
         ResponseEntity<OkResponseDto> response = passengerController.deletePassenger(passengerId);
 
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Passenger with id: 1 was deleted!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
+
         verify(passengerService, atMostOnce()).delete(passengerId);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 }

@@ -16,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,18 +47,20 @@ public class PassengerServiceTest {
     }
 
     @Test
-    void createShouldSavePassengerWhenPassengerDoesNotExist() {
+    void createShouldSavePassengerWhenPassengerIsNull() {
         PassengerDto passengerDtoWithoutId = new PassengerDto(null, "Joe", "Doe",
-                "joe.doe@example.com", "123456789" );
+                "joe.doe@example.com", "123456789");
 
-        Passenger mappedPassenger = new Passenger(null, "Joe", "Doe",
-                "joe.doe@example.com", "123456789" );
+        Passenger mappedPassenger = new Passenger(1L, "Joe", "Doe",
+                "joe.doe@example.com", "123456789");
 
-        when(mapper.dtoToEntity(passengerDtoWithoutId)).thenReturn(mappedPassenger);
+        when(passengerRepository.save(mapper.dtoToEntity(passengerDto))).thenReturn(mappedPassenger);
 
-        passengerService.create(passengerDtoWithoutId);
+        Long addedId = passengerService.create(passengerDtoWithoutId);
 
-        verify(passengerRepository).save(mappedPassenger);
+        assertEquals(1L, addedId);
+
+        verify(passengerRepository, atMostOnce()).save(passenger);
     }
 
     @Test
@@ -71,11 +72,29 @@ public class PassengerServiceTest {
         when(mapper.entityListToDtoList(passengers)).thenReturn(passengerDtos);
 
         List<PassengerDto> result = passengerService.getAllPassengers();
-        assertEquals(1, result.size());
-        assertEquals("Joe", result.getFirst().firstname());
-        assertEquals("Doe", result.getFirst().lastname());
-        assertEquals("joe.doe@example.com", result.getFirst().email());
-        assertEquals("123456789", result.getFirst().phone());
+
+        assertAll(
+                () -> assertEquals(1, result.size()),
+                () -> assertEquals("Joe", result.getFirst().firstname()),
+                () -> assertEquals("Doe", result.getFirst().lastname()),
+                () -> assertEquals("joe.doe@example.com", result.getFirst().email()),
+                () -> assertEquals("123456789", result.getFirst().phone())
+        );
+    }
+
+    @Test
+    void getPassengerShouldReturnPassengerDtoWhenPassengerExist() {
+        when(passengerRepository.findById(1L)).thenReturn(Optional.of(this.passenger));
+        when(mapper.entityToDto(this.passenger)).thenReturn(this.passengerDto);
+
+        PassengerDto testedDto = passengerService.getPassenger(1L);
+        assertEquals(passengerDto, testedDto);
+    }
+
+    @Test
+    void getPassengerShouldThrowExceptionWhenPassengerDoesNotExist() {
+        when(passengerRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(DataNotFoundException.class, () -> passengerService.getPassenger(1L));
     }
 
     @Test
@@ -97,11 +116,12 @@ public class PassengerServiceTest {
 
         passengerService.update(1L, updatedDto);
 
-        assertEquals("Bill", updatedDto.firstname());
-        assertEquals("Hill", updatedDto.lastname());
-        assertEquals("bill.hill@example.com", updatedDto.email());
-        assertEquals("123456789", updatedDto.phone());
-
+        assertAll(
+                () -> assertEquals("Bill", updatedDto.firstname()),
+                () -> assertEquals("Hill", updatedDto.lastname()),
+                () -> assertEquals("bill.hill@example.com", updatedDto.email()),
+                () -> assertEquals("123456789", updatedDto.phone())
+        );
 
         verify(passengerRepository).save(updatedPassenger);
     }

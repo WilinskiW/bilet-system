@@ -50,18 +50,18 @@ public class FlightServiceTest {
 
     @Test
     void createShouldSaveFlightWhenFlightIdIsNull() {
-        FlightDto flightDtoWithoutId = new FlightDto(null, "Warszawa", "Londyn", 120,
-                "RX100", LocalDateTime.now(), true);
+        FlightDto flightDtoWithoutId = new FlightDto(null, "Berlin", "London", 100,
+                "RX212", LocalDateTime.of(1999, 12, 12, 12, 12), true);
 
-        Flight mappedFlight = new Flight(null, "Warszawa", "Londyn", 120,
-                "RX100", LocalDateTime.now(), true);
+        Flight mappedFlight = new Flight(1L, "Berlin", "London", 100,
+                "RX212", LocalDateTime.of(1999, 12, 12, 12, 12), true);
 
-        when(mapper.dtoToEntity(flightDtoWithoutId)).thenReturn(mappedFlight);
-        when(flightRepository.save(mappedFlight)).thenReturn(mappedFlight);
+        when(flightRepository.existsFlightByFlightNumber(any())).thenReturn(false);
+        when(flightRepository.save(mapper.dtoToEntity(flightDtoWithoutId))).thenReturn(mappedFlight);
 
-        flightService.create(flightDtoWithoutId);
+        Long addedId = flightService.create(flightDtoWithoutId);
 
-        verify(flightRepository).save(mappedFlight);
+        assertEquals(1L, addedId);
     }
 
     @Test

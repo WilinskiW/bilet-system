@@ -55,7 +55,7 @@ public class FlightControllerTest {
         verify(flightService, atMostOnce()).create(flightDtoNoId);
         assertAll(
                 () -> assertEquals(1L, response.getBody().id()),
-                () -> assertEquals("Flight created successfully!", response.getBody().message()),
+                () -> assertEquals("Flight was added!", response.getBody().message()),
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful())
         );
     }
@@ -67,12 +67,11 @@ public class FlightControllerTest {
                 new FieldError("flightDto", "departurePlace", "Departure place is required")
         );
 
-        assertAll(
-                () -> assertEquals("Departure place is required", assertThrows(ValidationException.class,
-                        () -> flightController.addFlight(validFlightDto, bindingResult)).getMessage()
-                ),
-                () -> verify(flightService, never()).create(validFlightDto)
+        assertEquals("Departure place is required", assertThrows(ValidationException.class,
+                () -> flightController.addFlight(validFlightDto, bindingResult)).getMessage()
         );
+
+        verify(flightService, never()).create(validFlightDto);
     }
 
     @Test
@@ -82,11 +81,12 @@ public class FlightControllerTest {
 
         FlightDto flightDto = response.getBody().getFirst();
         assertAll(
-                () -> verify(flightService, atMostOnce()).getAllFlights(),
                 () -> assertEquals(2, response.getBody().size()),
                 () -> assertEquals(validFlightDto, flightDto),
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful())
         );
+
+        verify(flightService, atMostOnce()).getAllFlights();
     }
 
     @Test
@@ -106,11 +106,12 @@ public class FlightControllerTest {
         ResponseEntity<OkResponseDto> response = flightController.updateFlight(flightId, validFlightDto, bindingResult);
 
         assertAll(
-                () -> verify(flightService, atMostOnce()).update(flightId, validFlightDto),
                 () -> assertEquals(1L, response.getBody().id()),
-                () -> assertEquals("Flight 1 was updated!", response.getBody().message()),
+                () -> assertEquals("Flight with id: 1 was updated!", response.getBody().message()),
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful())
         );
+
+        verify(flightService, atMostOnce()).update(flightId, validFlightDto);
     }
 
     @Test
@@ -125,10 +126,9 @@ public class FlightControllerTest {
                 () -> flightController.updateFlight(flightId, validFlightDto, bindingResult)
         );
 
-        assertAll(
-                () -> assertEquals("Arrival place is required", thrown.getMessage()),
-                () -> verify(flightService, never()).update(flightId, validFlightDto)
-        );
+        assertEquals("Arrival place is required", thrown.getMessage());
+
+        verify(flightService, never()).update(flightId, validFlightDto);
     }
 
     @Test
@@ -138,10 +138,11 @@ public class FlightControllerTest {
         ResponseEntity<OkResponseDto> response = flightController.deleteFlight(flightId);
 
         assertAll(
-                () -> verify(flightService, atMostOnce()).delete(flightId),
                 () -> assertEquals(1L, response.getBody().id()),
-                () -> assertEquals("Flight 1 was deleted!", response.getBody().message()),
+                () -> assertEquals("Flight with id: 1 was deleted!", response.getBody().message()),
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful())
         );
+
+        verify(flightService, atMostOnce()).delete(flightId);
     }
 }

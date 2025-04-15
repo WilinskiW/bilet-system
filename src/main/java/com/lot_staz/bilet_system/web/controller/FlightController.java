@@ -26,7 +26,7 @@ public class FlightController {
         }
 
         Long addedId = flightService.create(flightDto);
-        return ResponseEntity.ok(new OkResponseDto(addedId, "Flight created successfully!"));
+        return ResponseEntity.ok(new OkResponseDto(addedId, "Flight was added!"));
     }
 
     @GetMapping
@@ -47,12 +47,12 @@ public class FlightController {
         }
 
         flightService.update(id, flightDto);
-        return ResponseEntity.ok(new OkResponseDto(id, "Flight " + id + " was updated!"));
+        return ResponseEntity.ok(new OkResponseDto(id, "Flight with id: " + id + " was updated!"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<OkResponseDto> deleteFlight(@PathVariable Long id) {
         flightService.delete(id);
-        return ResponseEntity.ok(new OkResponseDto(id, "Flight " + id + " was deleted!"));
+        return ResponseEntity.ok(new OkResponseDto(id, "Flight with id: " + id + " was deleted!"));
     }
 }

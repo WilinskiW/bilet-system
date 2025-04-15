@@ -1,6 +1,7 @@
 package com.lot_staz.bilet_system.web.service;
 
 import com.lot_staz.bilet_system.data.model.Passenger;
+import com.lot_staz.bilet_system.data.repository.FlightReservationRepository;
 import com.lot_staz.bilet_system.data.repository.PassengerRepository;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PassengerService {
     private final PassengerRepository passengerRepository;
+    private final FlightReservationRepository reservationRepository;
     private final PassengerMapper mapper;
 
     /**
@@ -87,6 +89,8 @@ public class PassengerService {
         Passenger passengerToDelete = passengerRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Passenger not found")
         );
+
+        reservationRepository.findPassengerById(id).ifPresent(reservationRepository::delete);
 
         passengerRepository.delete(passengerToDelete);
     }

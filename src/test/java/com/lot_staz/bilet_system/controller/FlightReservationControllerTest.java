@@ -2,6 +2,7 @@ package com.lot_staz.bilet_system.controller;
 
 import com.lot_staz.bilet_system.web.controller.FlightReservationController;
 import com.lot_staz.bilet_system.web.dto.FlightReservationDto;
+import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.service.FlightReservationService;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ public class FlightReservationControllerTest {
     void addFlightReservationShouldReturnOkWhenReservationIsAdded() {
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        ResponseEntity<Void> response = flightReservationController.addFlightReservation(validFlightReservationDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = flightReservationController.addFlightReservation(validFlightReservationDto, bindingResult);
 
         verify(reservationService, atMostOnce()).create(validFlightReservationDto);
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -72,7 +73,7 @@ public class FlightReservationControllerTest {
         Long reservationId = 1L;
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        ResponseEntity<Void> response = flightReservationController.updateReservation(reservationId, validFlightReservationDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = flightReservationController.updateReservation(reservationId, validFlightReservationDto, bindingResult);
 
         verify(reservationService, atMostOnce()).update(reservationId, validFlightReservationDto);
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -107,7 +108,7 @@ public class FlightReservationControllerTest {
     void deleteFlightReservationShouldReturnOkWhenReservationIsDeleted() {
         Long reservationId = 1L;
 
-        ResponseEntity<Void> response = flightReservationController.deleteReservation(reservationId);
+        ResponseEntity<OkResponseDto> response = flightReservationController.deleteReservation(reservationId);
 
         verify(reservationService, atMostOnce()).delete(reservationId);
         assertTrue(response.getStatusCode().is2xxSuccessful());

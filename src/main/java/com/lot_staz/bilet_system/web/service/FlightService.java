@@ -25,7 +25,7 @@ public class FlightService {
      * @throws IllegalArgumentException When flight ID is not null when creating a new flight
      */
     @Transactional
-    public void create(FlightDto flightDto) {
+    public Long create(FlightDto flightDto) {
         if (flightDto.id() != null) {
             throw new IllegalArgumentException("Flight ID should be null when creating a new flight");
         }
@@ -34,7 +34,9 @@ public class FlightService {
             throw new EntityExistsException("Flight with this flight number already exists");
         }
 
-        flightRepository.save(flightMapper.dtoToEntity(flightDto));
+        Flight addedFlight = flightRepository.save(flightMapper.dtoToEntity(flightDto));
+
+        return addedFlight.getId();
     }
 
     /**

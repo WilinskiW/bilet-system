@@ -1,6 +1,7 @@
 package com.lot_staz.bilet_system.controller;
 
 import com.lot_staz.bilet_system.web.controller.PassengerController;
+import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.service.PassengerService;
 import jakarta.validation.ValidationException;
@@ -40,7 +41,7 @@ public class PassengerControllerTest {
     void addPassengerShouldReturnOkWhenPassengerIsAdded() {
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        ResponseEntity<Void> response = passengerController.addPassenger(validPassengerDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = passengerController.addPassenger(validPassengerDto, bindingResult);
 
         verify(passengerService, atMostOnce()).create(validPassengerDto);
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -66,7 +67,7 @@ public class PassengerControllerTest {
         Long passengerId = 1L;
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        ResponseEntity<Void> response = passengerController.updatePassenger(passengerId, validPassengerDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = passengerController.updatePassenger(passengerId, validPassengerDto, bindingResult);
 
         verify(passengerService, atMostOnce()).update(passengerId, validPassengerDto);
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -94,7 +95,7 @@ public class PassengerControllerTest {
     void deletePassengerShouldReturnOkWhenPassengerIsDeleted() {
         Long passengerId = 1L;
 
-        ResponseEntity<Void> response = passengerController.deletePassenger(passengerId);
+        ResponseEntity<OkResponseDto> response = passengerController.deletePassenger(passengerId);
 
         verify(passengerService, atMostOnce()).delete(passengerId);
         assertTrue(response.getStatusCode().is2xxSuccessful());

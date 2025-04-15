@@ -1,5 +1,6 @@
 package com.lot_staz.bilet_system.web.controller;
 
+import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.dto.FlightDto;
 import com.lot_staz.bilet_system.web.service.FlightService;
 import jakarta.validation.Valid;
@@ -19,13 +20,13 @@ public class FlightController {
     private final FlightService flightService;
 
     @PostMapping
-    public ResponseEntity<Void> addFlight(@Valid @RequestBody FlightDto flightDto, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
+    public ResponseEntity<OkResponseDto> addFlight(@Valid @RequestBody FlightDto flightDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
-        flightService.create(flightDto);
-        return ResponseEntity.ok().build();
+        Long addedId = flightService.create(flightDto);
+        return ResponseEntity.ok(new OkResponseDto(addedId, "Flight created successfully!"));
     }
 
     @GetMapping
@@ -39,19 +40,19 @@ public class FlightController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateFlight(@PathVariable Long id, @Valid @RequestBody FlightDto flightDto,
-                                             BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
+    public ResponseEntity<OkResponseDto> updateFlight(@PathVariable Long id, @Valid @RequestBody FlightDto flightDto,
+                                                      BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
         flightService.update(id, flightDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new OkResponseDto(id, "Flight " + id + " was updated!"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFlight(@PathVariable Long id) {
+    public ResponseEntity<OkResponseDto> deleteFlight(@PathVariable Long id) {
         flightService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new OkResponseDto(id, "Flight " + id + " was deleted!"));
     }
 }

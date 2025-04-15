@@ -1,6 +1,7 @@
 package com.lot_staz.bilet_system.web.controller;
 
 import com.lot_staz.bilet_system.web.dto.FlightReservationDto;
+import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.service.FlightReservationService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -20,14 +21,14 @@ public class FlightReservationController {
     private final FlightReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<Void> addFlightReservation(@Valid @RequestBody FlightReservationDto reservationDto,
-                                                     BindingResult bindingResult) {
+    public ResponseEntity<OkResponseDto> addFlightReservation(@Valid @RequestBody FlightReservationDto reservationDto,
+                                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
-        reservationService.create(reservationDto);
-        return ResponseEntity.ok().build();
+        Long addedId = reservationService.create(reservationDto);
+        return ResponseEntity.ok(new OkResponseDto(addedId, "Flight reservation was created!"));
     }
 
     @GetMapping
@@ -41,19 +42,19 @@ public class FlightReservationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateReservation(@PathVariable Long id, @Valid @RequestBody FlightReservationDto reservationDto,
+    public ResponseEntity<OkResponseDto> updateReservation(@PathVariable Long id, @Valid @RequestBody FlightReservationDto reservationDto,
                                                   BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
         reservationService.update(id, reservationDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new OkResponseDto(id, "Flight reservation with id: " + id + " was updated!"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<OkResponseDto> deleteReservation(@PathVariable Long id) {
         reservationService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new OkResponseDto(id, "Flight reservation with id: " + id + " was deleted!"));
     }
 }

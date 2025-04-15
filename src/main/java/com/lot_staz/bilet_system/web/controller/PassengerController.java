@@ -1,5 +1,6 @@
 package com.lot_staz.bilet_system.web.controller;
 
+import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.service.PassengerService;
 import jakarta.validation.Valid;
@@ -19,13 +20,13 @@ public class PassengerController {
     private final PassengerService passengerService;
 
     @PostMapping
-    public ResponseEntity<Void> addPassenger(@Valid @RequestBody PassengerDto passengerDto, BindingResult bindingResult) {
+    public ResponseEntity<OkResponseDto> addPassenger(@Valid @RequestBody PassengerDto passengerDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
-        passengerService.create(passengerDto);
-        return ResponseEntity.ok().build();
+        Long addedId = passengerService.create(passengerDto);
+        return ResponseEntity.ok(new OkResponseDto(addedId, "Passenger was added!"));
     }
 
     @GetMapping
@@ -39,27 +40,27 @@ public class PassengerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePassenger(@PathVariable Long id, @Valid @RequestBody PassengerDto passengerDto,
+    public ResponseEntity<OkResponseDto> updatePassenger(@PathVariable Long id, @Valid @RequestBody PassengerDto passengerDto,
                                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
         passengerService.update(id, passengerDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new OkResponseDto(id, "Passenger with id: " + id + " was updated!"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePassenger(@PathVariable Long id) {
+    public ResponseEntity<OkResponseDto> deletePassenger(@PathVariable Long id) {
         passengerService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new OkResponseDto(id, "Passenger with id: " + id + " was deleted!"));
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<Void> verifyPassenger(@Valid @RequestBody PassengerDto passengerDto, BindingResult bindingResult) {
+    public ResponseEntity<OkResponseDto> verifyPassenger(@Valid @RequestBody PassengerDto passengerDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new OkResponseDto(null, "Passenger data are correct!"));
     }
 }

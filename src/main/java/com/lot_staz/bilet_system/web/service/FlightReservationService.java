@@ -29,10 +29,14 @@ public class FlightReservationService {
      * @throws DataNotFoundException If the flight or passenger does not exist.
      */
     @Transactional
-    public void create(FlightReservationDto reservationDto) {
+    public Long create(FlightReservationDto reservationDto) {
         validator.checkIfValidForCreate(reservationDto);
-        reservationRepository.save(mapper.dtoToEntity(reservationDto));
+
+        FlightReservation savedReservation = reservationRepository.save(mapper.dtoToEntity(reservationDto));
+
         emailService.sendEmail(reservationDto);
+
+        return savedReservation.getId();
     }
 
 

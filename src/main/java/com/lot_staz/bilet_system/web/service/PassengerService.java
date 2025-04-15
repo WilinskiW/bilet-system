@@ -26,12 +26,13 @@ public class PassengerService {
      * @throws IllegalArgumentException When passenger ID is not null when creating a new passenger
      */
     @Transactional
-    public void create(PassengerDto passengerDto) {
+    public Long create(PassengerDto passengerDto) {
         if (passengerDto.id() != null) {
             throw new IllegalArgumentException("Passenger ID should be null when creating a new passenger");
         }
 
-        passengerRepository.save(mapper.dtoToEntity(passengerDto));
+        Passenger savedPassenger = passengerRepository.save(mapper.dtoToEntity(passengerDto));
+        return savedPassenger.getId();
     }
 
     /**

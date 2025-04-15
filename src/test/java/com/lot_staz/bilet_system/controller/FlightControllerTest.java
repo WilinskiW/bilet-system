@@ -1,6 +1,7 @@
 package com.lot_staz.bilet_system.controller;
 
 import com.lot_staz.bilet_system.web.controller.FlightController;
+import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.dto.FlightDto;
 import com.lot_staz.bilet_system.web.service.FlightService;
 import jakarta.validation.ValidationException;
@@ -43,7 +44,7 @@ public class FlightControllerTest {
     void addFlightShouldReturnOkWhenFlightIsAdded() {
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        ResponseEntity<Void> response = flightController.addFlight(validFlightDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = flightController.addFlight(validFlightDto, bindingResult);
 
         verify(flightService, atMostOnce()).create(validFlightDto);
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -68,7 +69,7 @@ public class FlightControllerTest {
         Long flightId = 1L;
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        ResponseEntity<Void> response = flightController.updateFlight(flightId, validFlightDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = flightController.updateFlight(flightId, validFlightDto, bindingResult);
 
         verify(flightService, atMostOnce()).update(flightId, validFlightDto);
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -93,7 +94,7 @@ public class FlightControllerTest {
     void deleteFlightShouldReturnOkWhenFlightExists() {
         Long flightId = 1L;
 
-        ResponseEntity<Void> response = flightController.deleteFlight(flightId);
+        ResponseEntity<OkResponseDto> response = flightController.deleteFlight(flightId);
 
         verify(flightService, atMostOnce()).delete(flightId);
         assertTrue(response.getStatusCode().is2xxSuccessful());

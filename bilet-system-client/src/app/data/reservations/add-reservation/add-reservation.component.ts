@@ -30,7 +30,7 @@ export class AddReservation extends ReservationFormService implements OnInit {
   passenger = signal<PassengerModel | null>(null);
 
   ngOnInit() {
-    this.dataService.fetchData<FlightModel>(`http://localhost:8080/api/flights/${this.id()}`)
+    this.dataService.fetchData<FlightModel>(`https://bilet-system.onrender.com/api/flights/${this.id()}`)
       .subscribe({
         next: data => {
           this.flight = data;

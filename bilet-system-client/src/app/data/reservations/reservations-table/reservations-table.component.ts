@@ -19,5 +19,5 @@ import { ZeroDataComponent } from '../../../shared/components/zero-data/zero-dat
   ]
 })
 export class ReservationsTableComponent extends DataTableService<ReservationModel>{
-  protected url = "http://localhost:8080/api/reservations"
+  protected url = "https://bilet-system.onrender.com/api/reservations"
 }

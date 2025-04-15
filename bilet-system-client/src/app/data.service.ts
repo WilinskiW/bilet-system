@@ -35,8 +35,7 @@ export class DataService {
   }
 
   deleteData(url: string): Observable<void> {
-    const apiUrl = url.replace("http://localhost:4200/wiki", "http://localhost:8081/api");
-    return this.httpClient.delete<void>(apiUrl).pipe(
+    return this.httpClient.delete<void>(url).pipe(
       catchError((error) => {
         throw error;
       })

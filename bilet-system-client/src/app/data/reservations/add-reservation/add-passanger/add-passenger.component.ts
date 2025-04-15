@@ -20,7 +20,7 @@ export class AddPassengerComponent extends PassengerFormService{
     email: string,
     phone: string
   }): void {
-    this.dataService.sendData(passenger, `http://localhost:8080/api/passengers/verify`)
+    this.dataService.sendData(passenger, `https://bilet-system.onrender.com/api/passengers/verify`)
       .subscribe({
         complete: () => this.passengerValid.emit(passenger),
         error: () => this.passengerValid.emit(null)

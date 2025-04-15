@@ -22,7 +22,7 @@ export class EditFlightComponent extends FlightFormService implements OnInit {
   errorCode = signal(200);
 
   ngOnInit() {
-    this.dataService.fetchData<FlightModel>(`http://localhost:8080/api/flights/${this.id()}`)
+    this.dataService.fetchData<FlightModel>(`https://bilet-system.onrender.com/api/flights/${this.id()}`)
       .subscribe({
         next: data => {
           this.flight = data;
@@ -55,7 +55,7 @@ export class EditFlightComponent extends FlightFormService implements OnInit {
     departureTime: string | null;
     roundTrip: boolean | null
   }): void {
-    this.dataService.putData(flight, `http://localhost:8080/api/flights/${this.id()}`)
+    this.dataService.putData(flight, `https://bilet-system.onrender.com/api/flights/${this.id()}`)
       .subscribe({
         complete: () => this.goBack(["flights"]),
         error: err => {

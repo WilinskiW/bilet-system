@@ -23,7 +23,7 @@ export class EditPassengerComponent extends PassengerFormService implements OnIn
 
 
   ngOnInit(): void {
-    this.dataService.fetchData<PassengerModel>(`http://localhost:8080/api/passengers/${this.id()}`)
+    this.dataService.fetchData<PassengerModel>(`https://bilet-system.onrender.com/api/passengers/${this.id()}`)
       .subscribe({
         next: data => {
           this.passenger = data;
@@ -53,7 +53,7 @@ export class EditPassengerComponent extends PassengerFormService implements OnIn
     email: string | null;
     phone: string | null
   }): void {
-    this.dataService.putData(passenger, `http://localhost:8080/api/passengers/${this.id()}`)
+    this.dataService.putData(passenger, `https://bilet-system.onrender.com/api/passengers/${this.id()}`)
       .subscribe({
         complete: () => this.goBack(["passengers"]),
       })

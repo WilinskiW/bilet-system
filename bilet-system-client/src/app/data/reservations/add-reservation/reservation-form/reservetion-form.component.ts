@@ -34,7 +34,7 @@ export class ReservationForm extends ReservationFormService{
       hasDeparted: this.form.controls.hasDeparted.value as boolean
     }
 
-    this.dataService.sendData(reservation, `http://localhost:8080/api/reservations`)
+    this.dataService.sendData(reservation, `https://bilet-system.onrender.com/api/reservations`)
       .subscribe({
         complete: () => {
           this.goBack(["reservations"])

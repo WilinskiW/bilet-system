@@ -23,7 +23,7 @@ export class EditReservationComponent extends ReservationFormService implements 
 
 
   ngOnInit() {
-    this.dataService.fetchData<ReservationModel>(`http://localhost:8080/api/reservations/${this.id()}`)
+    this.dataService.fetchData<ReservationModel>(`https://bilet-system.onrender.com/api/reservations/${this.id()}`)
       .subscribe({
         next: data => {
           this.reservation = data;
@@ -60,7 +60,7 @@ export class EditReservationComponent extends ReservationFormService implements 
       hasDeparted: this.form.controls.hasDeparted.value!,
     }
 
-    this.dataService.putData(reservation, `http://localhost:8080/api/reservations/${this.id()}`)
+    this.dataService.putData(reservation, `https://bilet-system.onrender.com/api/reservations/${this.id()}`)
       .subscribe({
         complete: () => {
           this.goBack(["reservations"])

@@ -19,5 +19,5 @@ import { ZeroDataComponent } from '../../../shared/components/zero-data/zero-dat
   templateUrl: './passengers-table.component.html',
 })
 export class PassengersTableComponent extends DataTableService<PassengerModel>{
-  protected url = "http://localhost:8080/api/passengers";
+  protected url = "https://bilet-system.onrender.com/api/passengers";
 }

@@ -19,7 +19,7 @@ export class AddFlightComponent extends FlightFormService {
     departureTime: string | null;
     roundTrip: boolean | null
   }): void {
-    this.dataService.sendData<FlightModel>(flight, "http://localhost:8080/api/flights")
+    this.dataService.sendData<FlightModel>(flight, "https://bilet-system.onrender.com/api/flights")
       .subscribe({
         complete: () => this.goBack(["flights"]),
         error: err => {

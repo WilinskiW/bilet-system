@@ -19,5 +19,5 @@ import { DatePipe } from '@angular/common';
   templateUrl: './flights-table.component.html',
 })
 export class FlightsTableComponent extends DataTableService<FlightModel> {
-  protected url = "http://localhost:8080/api/flights"
+  protected url = "https://bilet-system.onrender.com/api/flights"
 }

@@ -3,9 +3,14 @@
 Aplikacja webowa do rezerwacji lotów stworzona z użyciem **Spring Boot**, **Angulara** oraz bazy danych **H2**. Projekt umożliwia przeglądanie dostępnych lotów, rezerwację miejsc i zarządzanie pasażerami.
 
 ## Jak skorzystać z aplikacji?
-### Wersja zdeploywana
-- Frontend jest dostępny na GitHub Pages: <a href="https://wilinskiw.github.io/bilet-system/">https://wilinskiw.github.io/bilet-system/</a
 
+### Wersja zdeploywana
+- Frontend jest dostępny na GitHub Pages: https://wilinskiw.github.io/bilet-system/
+- Backend jest dostępny na Renderze: https://bilet-system.onrender.com/swagger-ui/index.html
+
+
+
+###
 
 ## 🔧 Stack technologiczny
 

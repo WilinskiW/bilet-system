@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +76,12 @@ public class FlightService {
     public void update(Long id, FlightDto flightDto) {
         Flight existingFlight = flightRepository.findById(id).orElseThrow(() ->
                 new DataNotFoundException("Flight not found"));
+
+        Flight flightWithFlightNumber = flightRepository.findByFlightNumber(flightDto.flightNumber());
+
+        if(flightWithFlightNumber != null && !Objects.equals(flightWithFlightNumber.getId(), existingFlight.getId())){
+            throw new EntityExistsException("Flight with this flight number is already taken");
+        }
 
         existingFlight.setFlightNumber(flightDto.flightNumber());
         existingFlight.setDeparturePlace(flightDto.departurePlace());

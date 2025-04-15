@@ -6,6 +6,7 @@ import com.lot_staz.bilet_system.web.dto.FlightDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.mapper.FlightMapper;
 import com.lot_staz.bilet_system.web.service.FlightService;
+import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -102,6 +103,17 @@ public class FlightServiceTest {
         when(flightRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(DataNotFoundException.class, () -> flightService.update(1L, flightDto));
+    }
+
+    @Test
+    void updateShouldThrowExceptionWhenFlightNumberIsAlreadyTaken() {
+        Flight flightWithFlightNumber = new Flight(2L, "New York", "Honk Kong", 100, "RX212",
+                LocalDateTime.now(), false);
+
+        when(flightRepository.findById(any())).thenReturn(Optional.of(flight));
+        when(flightRepository.findByFlightNumber(flightDto.flightNumber())).thenReturn(flightWithFlightNumber);
+
+        assertThrows(EntityExistsException.class, () -> flightService.update(1L, flightDto));
     }
 
     @Test

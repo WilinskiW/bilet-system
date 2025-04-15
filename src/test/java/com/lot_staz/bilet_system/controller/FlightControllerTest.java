@@ -31,6 +31,7 @@ public class FlightControllerTest {
     @InjectMocks
     private FlightController flightController;
 
+    private FlightDto flightDtoNoId;
     private FlightDto validFlightDto;
 
     @BeforeEach
@@ -38,16 +39,24 @@ public class FlightControllerTest {
         this.validFlightDto = new FlightDto(
                 1L, "Berlin", "London", 120, "RX212",
                 LocalDateTime.now(), true);
+        this.flightDtoNoId = new FlightDto(
+                null, "Berlin", "London", 120, "RX212",
+                LocalDateTime.now(), true);
     }
 
     @Test
-    void addFlightShouldReturnOkWhenFlightIsAdded() {
+    void addFlightShouldReturnOkResponseDtoWhenFlightIsAdded() {
         when(bindingResult.hasErrors()).thenReturn(false);
+        when(flightService.create(flightDtoNoId)).thenReturn(1L);
 
-        ResponseEntity<OkResponseDto> response = flightController.addFlight(validFlightDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = flightController.addFlight(flightDtoNoId, bindingResult);
 
-        verify(flightService, atMostOnce()).create(validFlightDto);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
+        verify(flightService, atMostOnce()).create(flightDtoNoId);
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Flight created successfully!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
     }
 
     @Test
@@ -72,7 +81,11 @@ public class FlightControllerTest {
         ResponseEntity<OkResponseDto> response = flightController.updateFlight(flightId, validFlightDto, bindingResult);
 
         verify(flightService, atMostOnce()).update(flightId, validFlightDto);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Flight 1 was updated!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
     }
 
     @Test
@@ -97,6 +110,10 @@ public class FlightControllerTest {
         ResponseEntity<OkResponseDto> response = flightController.deleteFlight(flightId);
 
         verify(flightService, atMostOnce()).delete(flightId);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Flight 1 was deleted!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
     }
 }

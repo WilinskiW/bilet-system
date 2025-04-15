@@ -1,6 +1,7 @@
 package com.lot_staz.bilet_system.service;
 
 import com.lot_staz.bilet_system.data.model.Passenger;
+import com.lot_staz.bilet_system.data.repository.FlightReservationRepository;
 import com.lot_staz.bilet_system.data.repository.PassengerRepository;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
@@ -24,6 +25,9 @@ public class PassengerServiceTest {
 
     @Mock
     private PassengerRepository passengerRepository;
+
+    @Mock
+    private FlightReservationRepository reservationRepository;
 
     @Mock
     private PassengerMapper mapper;
@@ -135,9 +139,10 @@ public class PassengerServiceTest {
 
     @Test
     void deleteShouldDeletePassengerWhenPassengerDoesExist() {
-        Passenger deletePassenger = new Passenger();
-        when(passengerRepository.findById(1L)).thenReturn(Optional.of(deletePassenger));
+        when(passengerRepository.findById(1L)).thenReturn(Optional.of(passenger));
         passengerService.delete(1L);
-        verify(passengerRepository).delete(deletePassenger);
+
+        verify(reservationRepository, atMostOnce()).findPassengerById(1L);
+        verify(passengerRepository, atMostOnce()).delete(passenger);
     }
 }

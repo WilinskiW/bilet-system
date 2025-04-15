@@ -27,15 +27,14 @@ public class FlightReservationMapper implements Mapper<FlightReservation, Flight
 
     @Override
     public FlightReservation dtoToEntity(FlightReservationDto dto) {
-        FlightReservation reservation = new FlightReservation();
-
-        reservation.setReservationNumber(dto.reservationNumber());
-        reservation.setFlight(flightMapper.dtoToEntity(dto.flight()));
-        reservation.setSeatNumber(dto.seatNumber());
-        reservation.setPassenger(passengerMapper.dtoToEntity(dto.passenger()));
-        reservation.setHasDeparted(dto.hasDeparted());
-
-        return reservation;
+        return new FlightReservation(
+                dto.id(),
+                dto.reservationNumber(),
+                flightMapper.dtoToEntity(dto.flight()),
+                dto.seatNumber(),
+                passengerMapper.dtoToEntity(dto.passenger()),
+                dto.hasDeparted()
+        );
     }
 
 }

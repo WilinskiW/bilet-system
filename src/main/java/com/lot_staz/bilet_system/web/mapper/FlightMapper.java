@@ -21,16 +21,14 @@ public class FlightMapper implements Mapper<Flight, FlightDto> {
 
     @Override
     public Flight dtoToEntity(FlightDto dto) {
-        Flight flight = new Flight();
-
-        flight.setId(dto.id());
-        flight.setDeparturePlace(dto.departurePlace());
-        flight.setArrivalPlace(dto.arrivalPlace());
-        flight.setDuration(dto.duration());
-        flight.setFlightNumber(dto.flightNumber());
-        flight.setDepartureTime(dto.departureTime());
-        flight.setRoundTrip(dto.roundTrip());
-
-        return flight;
+        return new Flight(
+                dto.id(),
+                dto.departurePlace(),
+                dto.arrivalPlace(),
+                dto.duration(),
+                dto.flightNumber(),
+                dto.departureTime(),
+                dto.roundTrip()
+        );
     }
 }

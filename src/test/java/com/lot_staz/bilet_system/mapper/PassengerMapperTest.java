@@ -22,7 +22,7 @@ public class PassengerMapperTest {
                 new Passenger(1L, "John", "Doe", "joedoe@gmail.com", "123456789");
 
         PassengerDto dto = passengerMapper.entityToDto(entityPassenger);
-        PassengerDto correctDto = new PassengerDto(1L, "John", "Doe", "john@doe.com", "1234567890");
+        PassengerDto correctDto = new PassengerDto(1L, "John", "Doe", "joedoe@gmail.com", "123456789");
 
         assertEquals(correctDto, dto);
     }

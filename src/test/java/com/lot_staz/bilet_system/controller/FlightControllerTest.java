@@ -1,8 +1,8 @@
 package com.lot_staz.bilet_system.controller;
 
 import com.lot_staz.bilet_system.web.controller.FlightController;
-import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.dto.FlightDto;
+import com.lot_staz.bilet_system.web.dto.OkResponseDto;
 import com.lot_staz.bilet_system.web.service.FlightService;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +16,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FlightControllerTest {
@@ -66,11 +67,35 @@ public class FlightControllerTest {
                 new FieldError("flightDto", "departurePlace", "Departure place is required")
         );
 
-        ValidationException thrown = assertThrows(ValidationException.class,
-                () -> flightController.addFlight(validFlightDto, bindingResult)
+        assertAll(
+                () -> assertEquals("Departure place is required", assertThrows(ValidationException.class,
+                        () -> flightController.addFlight(validFlightDto, bindingResult)).getMessage()
+                ),
+                () -> verify(flightService, never()).create(validFlightDto)
         );
-        assertEquals("Departure place is required", thrown.getMessage());
-        verify(flightService, never()).create(validFlightDto);
+    }
+
+    @Test
+    void getAllFlightsShouldReturnListOfFlightDtos() {
+        when(flightService.getAllFlights()).thenReturn(List.of(validFlightDto, validFlightDto));
+        ResponseEntity<List<FlightDto>> response = flightController.getAllFlights();
+
+        FlightDto flightDto = response.getBody().getFirst();
+        assertAll(
+                () -> verify(flightService, atMostOnce()).getAllFlights(),
+                () -> assertEquals(2, response.getBody().size()),
+                () -> assertEquals(validFlightDto, flightDto),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
+    }
+
+    @Test
+    void getFlightByIdShouldReturnFlightDtoWhenFlightExistById() {
+        when(flightService.getFlight(1L)).thenReturn(validFlightDto);
+
+        ResponseEntity<FlightDto> response = flightController.getFlightById(1L);
+
+        assertEquals(validFlightDto, response.getBody());
     }
 
     @Test
@@ -80,8 +105,8 @@ public class FlightControllerTest {
 
         ResponseEntity<OkResponseDto> response = flightController.updateFlight(flightId, validFlightDto, bindingResult);
 
-        verify(flightService, atMostOnce()).update(flightId, validFlightDto);
         assertAll(
+                () -> verify(flightService, atMostOnce()).update(flightId, validFlightDto),
                 () -> assertEquals(1L, response.getBody().id()),
                 () -> assertEquals("Flight 1 was updated!", response.getBody().message()),
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful())
@@ -99,8 +124,11 @@ public class FlightControllerTest {
         ValidationException thrown = assertThrows(ValidationException.class,
                 () -> flightController.updateFlight(flightId, validFlightDto, bindingResult)
         );
-        assertEquals("Arrival place is required", thrown.getMessage());
-        verify(flightService, never()).update(flightId, validFlightDto);
+
+        assertAll(
+                () -> assertEquals("Arrival place is required", thrown.getMessage()),
+                () -> verify(flightService, never()).update(flightId, validFlightDto)
+        );
     }
 
     @Test
@@ -109,8 +137,8 @@ public class FlightControllerTest {
 
         ResponseEntity<OkResponseDto> response = flightController.deleteFlight(flightId);
 
-        verify(flightService, atMostOnce()).delete(flightId);
         assertAll(
+                () -> verify(flightService, atMostOnce()).delete(flightId),
                 () -> assertEquals(1L, response.getBody().id()),
                 () -> assertEquals("Flight 1 was deleted!", response.getBody().message()),
                 () -> assertTrue(response.getStatusCode().is2xxSuccessful())

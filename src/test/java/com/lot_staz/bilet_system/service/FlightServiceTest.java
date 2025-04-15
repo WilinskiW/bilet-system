@@ -57,6 +57,7 @@ public class FlightServiceTest {
                 "RX100", LocalDateTime.now(), true);
 
         when(mapper.dtoToEntity(flightDtoWithoutId)).thenReturn(mappedFlight);
+        when(flightRepository.save(mappedFlight)).thenReturn(mappedFlight);
 
         flightService.create(flightDtoWithoutId);
 
@@ -81,6 +82,22 @@ public class FlightServiceTest {
     }
 
     @Test
+    void getFlightByIdShouldReturnFlightDtoWhenFlightExist() {
+        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
+        when(mapper.entityToDto(flight)).thenReturn(flightDto);
+
+        FlightDto outputDto = flightService.getFlight(1L);
+
+        assertEquals(flightDto, outputDto);
+    }
+
+    @Test
+    void getFlightIdShouldThrowExceptionWhenFlightDoesNotExist() {
+        when(flightRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(DataNotFoundException.class, () -> flightService.getFlight(1L));
+    }
+
+    @Test
     void updateShouldThrowExceptionWhenFlightDoesNotExist() {
         when(flightRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -99,14 +116,15 @@ public class FlightServiceTest {
 
         flightService.update(1L, newFlightDto);
 
-        assertEquals("Warszawa", existingFlight.getDeparturePlace());
-        assertEquals("Londyn", existingFlight.getArrivalPlace());
-        assertEquals(120, existingFlight.getDuration());
-        assertEquals("RX100", existingFlight.getFlightNumber());
-        assertEquals(LocalDateTime.of(2025, 1, 1, 15, 0), existingFlight.getDepartureTime());
-        assertTrue(existingFlight.isRoundTrip());
-
-        verify(flightRepository).save(existingFlight);
+        assertAll(
+                () -> assertEquals("Warszawa", existingFlight.getDeparturePlace()),
+                () -> assertEquals("Londyn", existingFlight.getArrivalPlace()),
+                () -> assertEquals(120, existingFlight.getDuration()),
+                () -> assertEquals("RX100", existingFlight.getFlightNumber()),
+                () -> assertEquals(LocalDateTime.of(2025, 1, 1, 15, 0), existingFlight.getDepartureTime()),
+                () -> assertTrue(existingFlight.isRoundTrip()),
+                () -> verify(flightRepository).save(existingFlight)
+        );
     }
 
 

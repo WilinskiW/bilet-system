@@ -19,10 +19,12 @@ public class FlightService {
     private final FlightMapper flightMapper;
 
     /**
-     * Create new instance of flight in database
+     * Creates a new flight in the database.
      *
-     * @param flightDto request body
-     * @throws IllegalArgumentException When flight ID is not null when creating a new flight
+     * @param flightDto the flight data to create
+     * @return the ID of the created flight
+     * @throws IllegalArgumentException if flight ID is not null (should be null when creating)
+     * @throws EntityExistsException if a flight with the same flight number already exists
      */
     @Transactional
     public Long create(FlightDto flightDto) {
@@ -55,7 +57,6 @@ public class FlightService {
      * @return FlightDto of search Flight
      * @throws DataNotFoundException If flight doesn't exist
      */
-    //todo dopisać testy
     public FlightDto getFlight(Long id) {
         Flight flight = flightRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Flight not found"));

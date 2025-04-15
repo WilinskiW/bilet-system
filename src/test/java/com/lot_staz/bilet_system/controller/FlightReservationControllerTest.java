@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -46,11 +48,19 @@ public class FlightReservationControllerTest {
     @Test
     void addFlightReservationShouldReturnOkWhenReservationIsAdded() {
         when(bindingResult.hasErrors()).thenReturn(false);
+        when(reservationService.create(any())).thenReturn(1L);
 
-        ResponseEntity<OkResponseDto> response = flightReservationController.addFlightReservation(validFlightReservationDto, bindingResult);
+
+        ResponseEntity<OkResponseDto> response =
+                flightReservationController.addFlightReservation(validFlightReservationDto, bindingResult);
+
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Flight reservation was created!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
 
         verify(reservationService, atMostOnce()).create(validFlightReservationDto);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
     @Test
@@ -69,14 +79,44 @@ public class FlightReservationControllerTest {
     }
 
     @Test
+    void getAllReservationsShouldReturnListOfReservationDtos() {
+        when(reservationService.getAllReservations()).thenReturn(List.of(validFlightReservationDto, validFlightReservationDto));
+
+        var response = flightReservationController.getAllReservations();
+
+        assertAll(
+                () -> assertEquals(2, response.getBody().size()),
+                () -> assertEquals(validFlightReservationDto, response.getBody().getFirst())
+        );
+    }
+
+    @Test
+    void getReservationByIdShouldReturnReservationDtoWhenReservationIsExist() {
+        when(reservationService.getReservation(any())).thenReturn(validFlightReservationDto);
+
+        var response = flightReservationController.getReservationById(1L);
+
+        assertAll(
+                () -> assertEquals(validFlightReservationDto, response.getBody()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
+    }
+
+    @Test
     void updateFlightReservationShouldReturnOkWhenReservationIsUpdated() {
         Long reservationId = 1L;
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        ResponseEntity<OkResponseDto> response = flightReservationController.updateReservation(reservationId, validFlightReservationDto, bindingResult);
+        ResponseEntity<OkResponseDto> response = flightReservationController.updateReservation(reservationId,
+                validFlightReservationDto, bindingResult);
+
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Flight reservation with id: 1 was updated!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
 
         verify(reservationService, atMostOnce()).update(reservationId, validFlightReservationDto);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
     @Test
@@ -110,7 +150,12 @@ public class FlightReservationControllerTest {
 
         ResponseEntity<OkResponseDto> response = flightReservationController.deleteReservation(reservationId);
 
+        assertAll(
+                () -> assertEquals(1L, response.getBody().id()),
+                () -> assertEquals("Flight reservation with id: 1 was deleted!", response.getBody().message()),
+                () -> assertTrue(response.getStatusCode().is2xxSuccessful())
+        );
+
         verify(reservationService, atMostOnce()).delete(reservationId);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 }

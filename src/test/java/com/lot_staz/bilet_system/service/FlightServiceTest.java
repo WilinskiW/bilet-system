@@ -43,12 +43,6 @@ public class FlightServiceTest {
     }
 
     @Test
-    void createShouldThrowExceptionWhenFlightIdIsNotNull() {
-        assertThrows(IllegalArgumentException.class, () -> flightService.create(flightDto));
-        verify(flightRepository, never()).save(flight);
-    }
-
-    @Test
     void createShouldSaveFlightWhenFlightIdIsNull() {
         FlightDto flightDtoWithoutId = new FlightDto(null, "Berlin", "London", 100,
                 "RX212", LocalDateTime.of(1999, 12, 12, 12, 12), true);
@@ -62,6 +56,12 @@ public class FlightServiceTest {
         Long addedId = flightService.create(flightDtoWithoutId);
 
         assertEquals(1L, addedId);
+    }
+
+    @Test
+    void createShouldThrowExceptionWhenFlightIdIsNotNull() {
+        assertThrows(IllegalArgumentException.class, () -> flightService.create(flightDto));
+        verify(flightRepository, never()).save(flight);
     }
 
     @Test

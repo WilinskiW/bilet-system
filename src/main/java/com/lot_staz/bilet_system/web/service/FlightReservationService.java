@@ -30,7 +30,7 @@ public class FlightReservationService {
      */
     @Transactional
     public Long create(FlightReservationDto reservationDto) {
-        validator.checkIfValidForCreate(reservationDto);
+        validator.validateForCreate(reservationDto);
 
         FlightReservation savedReservation = reservationRepository.save(mapper.dtoToEntity(reservationDto));
 
@@ -72,7 +72,7 @@ public class FlightReservationService {
                 () -> new DataNotFoundException("Flight reservation not found")
         );
 
-        validator.checkIfValidForUpdate(reservationDto, id);
+        validator.validateForUpdate(reservationDto, id);
 
         existingReservation.setReservationNumber(reservationDto.reservationNumber());
         existingReservation.setSeatNumber(reservationDto.seatNumber());

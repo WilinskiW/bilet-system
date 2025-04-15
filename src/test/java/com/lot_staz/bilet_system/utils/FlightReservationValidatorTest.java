@@ -3,13 +3,13 @@ package com.lot_staz.bilet_system.utils;
 import com.lot_staz.bilet_system.data.model.FlightReservation;
 import com.lot_staz.bilet_system.data.repository.FlightRepository;
 import com.lot_staz.bilet_system.data.repository.FlightReservationRepository;
-import com.lot_staz.bilet_system.data.repository.PassengerRepository;
 import com.lot_staz.bilet_system.web.dto.FlightDto;
 import com.lot_staz.bilet_system.web.dto.FlightReservationDto;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.exception.DataNotFoundException;
 import com.lot_staz.bilet_system.web.exception.SeatAlreadyTakenException;
 import com.lot_staz.bilet_system.web.utils.FlightReservationValidator;
+import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,82 +30,85 @@ public class FlightReservationValidatorTest {
     private FlightRepository flightRepository;
 
     @Mock
-    private PassengerRepository passengerRepository;
-
-    @Mock
     private FlightReservationRepository reservationRepository;
 
     @InjectMocks
     private FlightReservationValidator validator;
 
-    private FlightReservationDto validReservationDto;
+    private FlightDto flightDto;
+    private PassengerDto passengerDto;
+    private FlightReservationDto reservationDto;
 
     @BeforeEach
     void setUp() {
-        FlightDto flightDto = new FlightDto(1L, "Berlin", "London", 100, "RX212",
-                LocalDateTime.now(), false);
-        PassengerDto passengerDto = new PassengerDto(1L, "Joe", "Doe",
-                "joe.doe@example.com", "123456789");
-
-        validReservationDto = new FlightReservationDto(1L, "RD12", flightDto, "10A",
-                passengerDto, false);
+        this.flightDto = new FlightDto(1L, "AA101", "WAW", 100, "NYC", LocalDateTime.now(), false);
+        this.passengerDto = new PassengerDto(1L, "Joe", "Doe", "joe.doe@example.com", "123456789");
+        this.reservationDto = new FlightReservationDto(1L, "RES123", flightDto, "A1", passengerDto, false);
     }
 
     @Test
-    void checkIfValidForUpdateShouldThrowExceptionWhenFlightNotFound() {
-        when(flightRepository.existsById(validReservationDto.flight().id())).thenReturn(false);
+    void shouldPassValidationForCreate() {
+        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(reservationRepository.findByReservationNumber("RES123")).thenReturn(null);
+        when(reservationRepository.findBySeatNumberAndFlightId("A1", 1L)).thenReturn(Optional.empty());
 
-        assertThrows(DataNotFoundException.class, () -> validator.checkIfValidForCreate(validReservationDto));
+        assertDoesNotThrow(() -> validator.validateForCreate(reservationDto));
     }
 
     @Test
-    void checkIfValidForUpdateShouldThrowExceptionWhenPassengerNotFound() {
-        when(flightRepository.existsById(validReservationDto.flight().id())).thenReturn(true);
-        when(passengerRepository.existsById(validReservationDto.passenger().id())).thenReturn(false);
+    void shouldThrowIfFlightDoesNotExist() {
+        when(flightRepository.existsById(1L)).thenReturn(false);
 
-        assertThrows(DataNotFoundException.class, () -> validator.checkIfValidForCreate(validReservationDto));
+        assertThrows(DataNotFoundException.class, () -> validator.validateForCreate(reservationDto));
     }
 
     @Test
-    void checkIfValidForUpdateShouldThrowExceptionWhenSeatIsAlreadyTaken() {
-        when(flightRepository.existsById(validReservationDto.flight().id())).thenReturn(true);
-        when(passengerRepository.existsById(validReservationDto.passenger().id())).thenReturn(true);
-        when(reservationRepository.existsBySeatNumberAndFlightId(validReservationDto.seatNumber(), validReservationDto.flight().id()))
-                .thenReturn(true);
+    void shouldThrowIfReservationNumberExistsForAnotherId() {
+        FlightReservation existing = new FlightReservation();
+        existing.setId(99L);
 
-        assertThrows(SeatAlreadyTakenException.class, () -> validator.checkIfValidForCreate(validReservationDto));
+        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(reservationRepository.findByReservationNumber("RES123")).thenReturn(existing);
+
+        assertThrows(EntityExistsException.class, () -> validator.validateForCreate(reservationDto));
     }
 
     @Test
-    void checkIfValidShouldPassWhenDataIsValidForCreate() {
-        when(flightRepository.existsById(validReservationDto.flight().id())).thenReturn(true);
-        when(passengerRepository.existsById(validReservationDto.passenger().id())).thenReturn(true);
-        when(reservationRepository.existsBySeatNumberAndFlightId(validReservationDto.seatNumber(), validReservationDto.flight().id()))
-                .thenReturn(false);
+    void shouldThrowIfSeatIsAlreadyTakenForCreate() {
+        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(reservationRepository.findByReservationNumber("RES123")).thenReturn(null);
 
-        validator.checkIfValidForCreate(validReservationDto);
+        FlightReservation seatConflict = new FlightReservation();
+        seatConflict.setId(2L);
 
-        verify(flightRepository).existsById(validReservationDto.flight().id());
-        verify(passengerRepository).existsById(validReservationDto.passenger().id());
-        verify(reservationRepository).existsBySeatNumberAndFlightId(validReservationDto.seatNumber(), validReservationDto.flight().id());
+        when(reservationRepository.findBySeatNumberAndFlightId("A1", 1L)).thenReturn(Optional.of(seatConflict));
+
+        assertThrows(SeatAlreadyTakenException.class, () -> validator.validateForCreate(reservationDto));
     }
 
     @Test
-    void checkIfValidForUpdateShouldThrowExceptionWhenSeatIsTakenByAnotherReservation() {
-        FlightReservationDto updatedReservationDto = new FlightReservationDto(
-                1L, "RD100", validReservationDto.flight(), "TEST D",
-                validReservationDto.passenger(), true
-        );
+    void shouldPassValidationForUpdateWhenSameSeatIsUsedBySameReservation() {
+        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(reservationRepository.findByReservationNumber("RES123")).thenReturn(null);
 
-        when(flightRepository.existsById(updatedReservationDto.flight().id())).thenReturn(true);
-        when(passengerRepository.existsById(updatedReservationDto.passenger().id())).thenReturn(true);
+        FlightReservation existing = new FlightReservation();
+        existing.setId(1L);
 
-        FlightReservation existingReservation = new FlightReservation();
-        existingReservation.setId(2L);
+        when(reservationRepository.findBySeatNumberAndFlightId("A1", 1L)).thenReturn(Optional.of(existing));
 
-        when(reservationRepository.findBySeatNumberAndFlightId(updatedReservationDto.seatNumber(), updatedReservationDto.flight().id()))
-                .thenReturn(Optional.of(existingReservation));
+        assertDoesNotThrow(() -> validator.validateForUpdate(reservationDto, 1L));
+    }
 
-        assertThrows(SeatAlreadyTakenException.class, () -> validator.checkIfValidForUpdate(updatedReservationDto, 1L));
+    @Test
+    void shouldThrowForUpdateWhenSeatTakenByAnotherReservation() {
+        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(reservationRepository.findByReservationNumber("RES123")).thenReturn(null);
+
+        FlightReservation otherReservation = new FlightReservation();
+        otherReservation.setId(99L);
+
+        when(reservationRepository.findBySeatNumberAndFlightId("A1", 1L)).thenReturn(Optional.of(otherReservation));
+
+        assertThrows(SeatAlreadyTakenException.class, () -> validator.validateForUpdate(reservationDto, 1L));
     }
 }

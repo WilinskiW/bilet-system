@@ -16,15 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,8 +43,7 @@ public class FlightReservationTest {
     private FlightReservationService service;
 
     private FlightReservationDto validReservationDto;
-
-    private FlightReservation existingReservation;
+    private FlightReservation reservation;
 
     @BeforeEach
     void setUp() {
@@ -55,113 +52,110 @@ public class FlightReservationTest {
         PassengerDto passengerDto = new PassengerDto(1L, "Joe", "Doe",
                 "joe.doe@example.com", "123456789");
 
-        this.validReservationDto = new FlightReservationDto(1L, "RD12", flightDto, "10A",
-                passengerDto, false);
-
-        this.existingReservation = new FlightReservation(1L, "RD12", null, "10A", null, false);
+        validReservationDto = new FlightReservationDto(1L, "RD12", flightDto, "10A", passengerDto, false);
+        reservation = new FlightReservation(1L, "RD12", null, "10A", null, false);
     }
 
     @Test
     void createShouldSaveReservationWhenEverythingIsOk() {
-        service.create(validReservationDto);
+        when(mapper.dtoToEntity(validReservationDto)).thenReturn(reservation);
+        when(reservationRepository.save(reservation)).thenReturn(reservation);
 
-        verify(validator, atMostOnce()).checkIfValidForCreate(validReservationDto);
-        verify(reservationRepository, atMostOnce()).save(mapper.dtoToEntity(validReservationDto));
-        verify(emailService, atMostOnce()).sendEmail(validReservationDto);
+        Long addedId = service.create(validReservationDto);
+
+        assertEquals(1L, addedId);
+        verify(validator).validateForCreate(validReservationDto);
+        verify(reservationRepository).save(reservation);
+        verify(emailService).sendEmail(validReservationDto);
     }
 
     @Test
-    void createShouldStopExecutingWhenValidationFails() {
-        doThrow(new SeatAlreadyTakenException("Seat already in use")).when(validator).checkIfValidForCreate(validReservationDto);
+    void createShouldThrowSeatAlreadyTakenException() {
+        doThrow(new SeatAlreadyTakenException("Seat already in use"))
+                .when(validator).validateForCreate(validReservationDto);
 
-        try {
-            service.create(validReservationDto);
-        } catch (SeatAlreadyTakenException ex) {
-            assertEquals("Seat already in use", ex.getMessage());
-            verify(validator, atMostOnce()).checkIfValidForCreate(validReservationDto);
-            verify(reservationRepository, never()).save(mapper.dtoToEntity(validReservationDto));
-            verify(emailService, never()).sendEmail(validReservationDto);
-        }
+        SeatAlreadyTakenException exception = assertThrows(SeatAlreadyTakenException.class,
+                () -> service.create(validReservationDto));
 
-        Mockito.clearInvocations(validator);
-        doThrow(new DataNotFoundException("Flight not found")).when(validator).checkIfValidForCreate(validReservationDto);
-        try {
-            service.create(validReservationDto);
-        } catch (DataNotFoundException ex) {
-            assertEquals("Flight not found", ex.getMessage());
-            verify(validator, atMostOnce()).checkIfValidForCreate(validReservationDto);
-            verify(reservationRepository, never()).save(mapper.dtoToEntity(validReservationDto));
-            verify(emailService, never()).sendEmail(validReservationDto);
-        }
+        assertEquals("Seat already in use", exception.getMessage());
+        verify(reservationRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+    }
+
+    @Test
+    void createShouldThrowDataNotFoundException() {
+        doThrow(new DataNotFoundException("Flight not found"))
+                .when(validator).validateForCreate(validReservationDto);
+
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+                () -> service.create(validReservationDto));
+
+        assertEquals("Flight not found", exception.getMessage());
+        verify(reservationRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
     }
 
     @Test
     void getAllReservationsShouldReturnListOfReservationsDtos() {
-        List<FlightReservation> reservations = List.of(new FlightReservation(1L, "RD12", null,
-                "10A", null, false));
-
+        List<FlightReservation> reservations = List.of(reservation);
         List<FlightReservationDto> reservationDtos = List.of(validReservationDto);
 
         when(reservationRepository.findAll()).thenReturn(reservations);
         when(mapper.entityListToDtoList(reservations)).thenReturn(reservationDtos);
 
         List<FlightReservationDto> result = service.getAllReservations();
+
         assertEquals(1, result.size());
-        assertEquals(1L, result.getFirst().id());
-        assertEquals("RD12", result.getFirst().reservationNumber());
-        assertEquals("10A", result.getLast().seatNumber());
-        assertFalse(result.getFirst().hasDeparted());
+        FlightReservationDto dto = result.getFirst();
+        assertEquals("RD12", dto.reservationNumber());
+        assertEquals("10A", dto.seatNumber());
+        assertFalse(dto.hasDeparted());
     }
 
     @Test
-    void updateShouldUpdateReservationWhenEverythingIsOk() {
-        FlightReservation updatedReservation = new FlightReservation();
-        updatedReservation.setReservationNumber(validReservationDto.reservationNumber());
-        updatedReservation.setSeatNumber(validReservationDto.seatNumber());
-        updatedReservation.setHasDeparted(validReservationDto.hasDeparted());
-
-        when(reservationRepository.findById(1L)).thenReturn(Optional.of(existingReservation));
+    void updateShouldUpdateReservationWhenExists() {
+        when(reservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
         service.update(1L, validReservationDto);
 
-        verify(reservationRepository, atMostOnce()).save(updatedReservation);
-        verify(validator, atMostOnce()).checkIfValidForUpdate(validReservationDto, 1L);
+        assertAll(
+                () -> assertEquals("RD12", reservation.getReservationNumber()),
+                () -> assertEquals("10A", reservation.getSeatNumber()),
+                () -> assertFalse(reservation.isHasDeparted())
+        );
+
+        verify(validator).validateForUpdate(validReservationDto, 1L);
+        verify(reservationRepository).save(reservation);
     }
 
     @Test
-    void updateShouldThrowExceptionWhenReservationNotFound() {
+    void updateShouldThrowWhenReservationNotFound() {
         when(reservationRepository.findById(1L)).thenReturn(Optional.empty());
 
-        try {
-            service.update(1L, validReservationDto);
-        } catch (DataNotFoundException ex) {
-            assertEquals("Flight reservation not found", ex.getMessage());
-        }
+        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+                () -> service.update(1L, validReservationDto));
 
-        verify(reservationRepository, atMostOnce()).findById(1L);
+        assertEquals("Flight reservation not found", ex.getMessage());
+        verify(reservationRepository, never()).save(any());
     }
 
     @Test
     void deleteShouldDeleteReservationWhenExists() {
-        when(reservationRepository.findById(1L)).thenReturn(Optional.of(existingReservation));
+        when(reservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
         service.delete(1L);
 
-        verify(reservationRepository, atMostOnce()).delete(existingReservation);
+        verify(reservationRepository).delete(reservation);
     }
 
     @Test
-    void deleteShouldThrowExceptionWhenReservationNotFound() {
+    void deleteShouldThrowWhenReservationNotFound() {
         when(reservationRepository.findById(1L)).thenReturn(Optional.empty());
 
-        try {
-            service.delete(1L);
-        } catch (DataNotFoundException ex) {
-            assertEquals("Flight reservation not found", ex.getMessage());
-        }
+        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+                () -> service.delete(1L));
 
-        verify(reservationRepository, atMostOnce()).findById(1L);
-        verify(reservationRepository, never()).delete(existingReservation);
+        assertEquals("Flight reservation not found", ex.getMessage());
+        verify(reservationRepository, never()).delete(any());
     }
-
 }

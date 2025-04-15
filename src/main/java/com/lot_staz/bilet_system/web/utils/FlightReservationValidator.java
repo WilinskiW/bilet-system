@@ -10,9 +10,11 @@ import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * A utility class responsible for validating flight reservation data.
- * It checks if a flight, passenger, and seat are available and not taken.
+ * Provides validation logic for creating and updating reservations.
  */
 @Component
 @RequiredArgsConstructor
@@ -22,54 +24,96 @@ public class FlightReservationValidator {
     private final FlightReservationRepository reservationRepository;
 
     /**
-     * Checks if the reservation data is valid for a new reservation.
-     * This method validates if the flight exists, the passenger exists, and if the seat number is available.
+     * Validates whether the provided reservation data is valid for creating a new reservation.
+     * <ol>
+     *     <li>Checks if the flight exists.</li>
+     *     <li>Checks if the reservation number is unique.</li>
+     *     <li>Checks if the seat number is not already taken.</li>
+     * </ol>
      *
-     * @param reservationDto The flight reservation data to be validated.
-     * @throws DataNotFoundException If the flight or passenger cannot be found.
-     * @throws SeatAlreadyTakenException If the requested seat is already taken.
+     * @param dto The reservation data to validate.
+     * @throws DataNotFoundException if the flight does not exist.
+     * @throws EntityExistsException if the reservation number is already used.
+     * @throws SeatAlreadyTakenException if the seat is already taken on the flight.
      */
-    public void checkIfValidForCreate(FlightReservationDto reservationDto) {
-        check(reservationDto);
+    public void validateForCreate(FlightReservationDto dto) {
+        validateCommon(dto);
+        checkSeatAvailability(dto.seatNumber(), dto.flight().id(), null);
+    }
 
-        // Check if the requested seat is already taken for this flight
-        if (reservationRepository.existsBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().id())) {
-            throw new SeatAlreadyTakenException("Seat number already in use");
+    /**
+     * Validates whether the provided reservation data is valid for updating an existing reservation.
+     * <ul>
+     *     <li>Checks if the flight exists.</li>
+     *     <li>Checks if the reservation number is unique (excluding current one).</li>
+     *     <li>Checks if the seat number is not already taken by another reservation.</li>
+     * </ul>
+     *
+     * @param dto The reservation data to validate.
+     * @param reservationId The ID of the reservation being updated.
+     * @throws DataNotFoundException if the flight does not exist.
+     * @throws EntityExistsException if the reservation number is already used by another reservation.
+     * @throws SeatAlreadyTakenException if the seat is taken by a different reservation.
+     */
+    public void validateForUpdate(FlightReservationDto dto, Long reservationId) {
+        validateCommon(dto);
+        checkSeatAvailability(dto.seatNumber(), dto.flight().id(), reservationId);
+    }
+
+    /**
+     * Performs common validation used in both create and update operations:
+     * <ul>
+     *     <li>Checks if the flight exists.</li>
+     *     <li>Ensures the reservation number is not duplicated.</li>
+     * </ul>
+     *
+     * @param dto The reservation data to validate.
+     * @throws DataNotFoundException if the flight is not found.
+     * @throws EntityExistsException if the reservation number is duplicated.
+     */
+    private void validateCommon(FlightReservationDto dto) {
+        checkFlightExists(dto.flight().id());
+        checkReservationNumberUnique(dto);
+    }
+
+    /**
+     * Validates if the flight with the given ID exists in the database.
+     *
+     * @param flightId The ID of the flight.
+     * @throws DataNotFoundException if the flight does not exist.
+     */
+    private void checkFlightExists(Long flightId) {
+        if (!flightRepository.existsById(flightId)) {
+            throw new DataNotFoundException("Flight not found");
         }
     }
 
     /**
-     * Checks if the reservation data is valid for updating an existing reservation.
-     * This method performs the same checks as {@link #checkIfValidForCreate(FlightReservationDto)}, but also
-     * ensures that the seat is not taken by another reservation.
+     * Ensures that the reservation number is unique in database.
      *
-     * @param reservationDto The updated flight reservation data.
-     * @param existingReservationId The ID of the existing reservation being updated.
-     * @throws DataNotFoundException If the flight or passenger cannot be found.
-     * @throws SeatAlreadyTakenException If the requested seat is taken by another reservation.
+     * @param dto The reservation DTO with the reservation number.
+     * @throws EntityExistsException if a reservation with the same number already exists and has a different ID.
      */
-    public void checkIfValidForUpdate(FlightReservationDto reservationDto, Long existingReservationId) {
-        check(reservationDto);
-
-        // Find if there is an existing reservation for the same seat and flight
-        var existing = reservationRepository
-                .findBySeatNumberAndFlightId(reservationDto.seatNumber(), reservationDto.flight().id());
-
-        // If a reservation exists, and it is not the current one, throw an exception
-        if (existing.isPresent() && !existing.get().getId().equals(existingReservationId)) {
-            throw new SeatAlreadyTakenException("Seat number already in use");
+    private void checkReservationNumberUnique(FlightReservationDto dto) {
+        FlightReservation existing = reservationRepository.findByReservationNumber(dto.reservationNumber());
+        if (existing != null && !existing.getId().equals(dto.id())) {
+            throw new EntityExistsException("Reservation number already exists");
         }
     }
 
-    private void check(FlightReservationDto reservationDto){
-        // Check if the flight exists in the database
-        if (!flightRepository.existsById(reservationDto.flight().id())) {
-            throw new DataNotFoundException("Flight not found");
-        }
-
-        FlightReservation reservation = reservationRepository.findByReservationNumber(reservationDto.reservationNumber());
-        if(reservation != null && !reservation.getId().equals(reservationDto.id())) {
-            throw new EntityExistsException("Reservation number already exists");
+    /**
+     * Validates if the seat is available for the given flight.
+     * Skips the check if the found reservation belongs to the same ID passed (for update cases).
+     *
+     * @param seatNumber The seat number to check.
+     * @param flightId The flight ID.
+     * @param excludeId ID to exclude from seat conflict check (can be null for creation).
+     * @throws SeatAlreadyTakenException if the seat is already taken by a different reservation.
+     */
+    private void checkSeatAvailability(String seatNumber, Long flightId, Long excludeId) {
+        Optional<FlightReservation> existing = reservationRepository.findBySeatNumberAndFlightId(seatNumber, flightId);
+        if (existing.isPresent() && !existing.get().getId().equals(excludeId)) {
+            throw new SeatAlreadyTakenException("Seat number already in use");
         }
     }
 }

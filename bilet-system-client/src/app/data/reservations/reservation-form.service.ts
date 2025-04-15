@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DataForm } from '../../shared/abstract/data-form.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -15,8 +15,6 @@ export abstract class ReservationFormService extends DataForm {
     }),
     hasDeparted: new FormControl(false)
   })
-  errorMessage = signal("");
-
 
   submit(): void {
   }

@@ -26,7 +26,6 @@ export class EditFlightComponent extends FlightFormService implements OnInit {
       .subscribe({
         next: data => {
           this.flight = data;
-
           this.form.patchValue({
             departurePlace: data.departurePlace,
             arrivalPlace: data.arrivalPlace,
@@ -59,6 +58,10 @@ export class EditFlightComponent extends FlightFormService implements OnInit {
     this.dataService.putData(flight, `http://localhost:8080/api/flights/${this.id()}`)
       .subscribe({
         complete: () => this.goBack(["flights"]),
+        error: err => {
+          console.log(err.error.message)
+          this.errorMessage.set(err.error.message)
+        }
       })
   }
 }

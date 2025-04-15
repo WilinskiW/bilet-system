@@ -22,7 +22,10 @@ export class AddFlightComponent extends FlightFormService {
     this.dataService.sendData<FlightModel>(flight, "http://localhost:8080/api/flights")
       .subscribe({
         complete: () => this.goBack(["flights"]),
-        error: err => console.error("Błąd podczas dodawania lotu", err)
+        error: err => {
+          console.log(err.error.message)
+          this.errorMessage.set(err.error.message)
+        }
       });
   }
 }

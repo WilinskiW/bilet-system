@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../../form.service';
 import { DataService } from '../../data.service';
@@ -8,6 +8,7 @@ export abstract class DataForm {
   abstract form: FormGroup;
   protected formService = inject(FormService);
   protected dataService = inject(DataService);
+  errorMessage = signal("");
 
   isInvalid(key: string): boolean {
     return this.formService.isInvalid(this.form, key);

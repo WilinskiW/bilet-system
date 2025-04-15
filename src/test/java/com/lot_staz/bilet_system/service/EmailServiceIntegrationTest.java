@@ -6,7 +6,6 @@ import com.lot_staz.bilet_system.web.dto.FlightDto;
 import com.lot_staz.bilet_system.web.dto.FlightReservationDto;
 import com.lot_staz.bilet_system.web.dto.PassengerDto;
 import com.lot_staz.bilet_system.web.service.EmailService;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -42,7 +42,7 @@ public class EmailServiceIntegrationTest {
     }
 
     @Test
-    void sentEmailTest() throws MessagingException {
+    void sentEmailTest() {
         FlightDto flightDto = new FlightDto(1L, "TEST dep", "TEST arr", 100,
                 "TEST", LocalDateTime.now(), false);
         PassengerDto passengerDto = new PassengerDto(1L, "Joe", "Doe", "joedoe@gmail.com", "123456789");
@@ -57,9 +57,13 @@ public class EmailServiceIntegrationTest {
 
         emailService.sendEmail(dto);
 
+        greenMail.waitForIncomingEmail(1);
+
         MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
-        assertEquals(1, receivedMessages.length);
-        assertEquals("Rezerwacja biletów dla lotu: TEST", receivedMessages[0].getSubject());
-        assertEquals("testuser@localhost.com", receivedMessages[0].getFrom()[0].toString());
+        assertAll(
+                () -> assertEquals(1, receivedMessages.length),
+                () -> assertEquals("Rezerwacja biletów dla lotu: TEST", receivedMessages[0].getSubject()),
+                () -> assertEquals("testuser@localhost.com", receivedMessages[0].getFrom()[0].toString())
+        );
     }
 }

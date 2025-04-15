@@ -28,7 +28,7 @@ public class Flight {
     @Column(name = "departure_time", nullable = false)
     private LocalDateTime departureTime;
 
-    @OneToMany(mappedBy = "flight")
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     private List<FlightReservation> flightReservations;
 
     @Column(name = "round_trip", nullable = false)

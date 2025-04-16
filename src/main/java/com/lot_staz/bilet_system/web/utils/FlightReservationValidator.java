@@ -39,6 +39,7 @@ public class FlightReservationValidator {
     public void validateForCreate(FlightReservationDto dto) {
         validateCommon(dto);
         checkSeatAvailability(dto.seatNumber(), dto.flight().id(), null);
+        validatePassengerForCreate(dto);
     }
 
     /**
@@ -75,6 +76,7 @@ public class FlightReservationValidator {
         checkFlightExists(dto.flight().id());
         checkReservationNumberUnique(dto);
     }
+
 
     /**
      * Validates if the flight with the given ID exists in the database.
@@ -114,6 +116,17 @@ public class FlightReservationValidator {
         Optional<FlightReservation> existing = reservationRepository.findBySeatNumberAndFlightId(seatNumber, flightId);
         if (existing.isPresent() && !existing.get().getId().equals(excludeId)) {
             throw new SeatAlreadyTakenException("Seat number already in use");
+        }
+    }
+
+    /**
+     * Ensures that the passenger ID is not set
+     * @param dto The reservation DTO with the passenger.
+     * @throws IllegalArgumentException if the passenger object has ID
+     */
+    private void validatePassengerForCreate(FlightReservationDto dto) {
+        if (dto.passenger().id() != null) {
+            throw new IllegalArgumentException("New passenger should not have an ID set.");
         }
     }
 }

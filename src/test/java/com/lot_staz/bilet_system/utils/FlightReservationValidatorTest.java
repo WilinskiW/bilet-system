@@ -48,11 +48,25 @@ public class FlightReservationValidatorTest {
 
     @Test
     void shouldPassValidationForCreate() {
+        passengerDto = new PassengerDto(null, "Joe", "Doe", "joe.doe@example.com", "123456789");
+        reservationDto = new FlightReservationDto(1L, "RES123", flightDto, "A1", passengerDto, false);
+
         when(flightRepository.existsById(1L)).thenReturn(true);
         when(reservationRepository.findByReservationNumber("RES123")).thenReturn(null);
         when(reservationRepository.findBySeatNumberAndFlightId("A1", 1L)).thenReturn(Optional.empty());
 
+
         assertDoesNotThrow(() -> validator.validateForCreate(reservationDto));
+    }
+
+    @Test
+    void shouldThrowIfPassengerHasId(){
+        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(reservationRepository.findByReservationNumber("RES123")).thenReturn(null);
+        when(reservationRepository.findBySeatNumberAndFlightId("A1", 1L)).thenReturn(Optional.empty());
+
+
+        assertThrows(IllegalArgumentException.class, () -> validator.validateForCreate(reservationDto));
     }
 
     @Test

@@ -7,6 +7,9 @@ Aplikacja webowa do rezerwacji lotów stworzona z użyciem **Spring Boot**, **An
 ### Wersja zdeploywana
 - Frontend jest dostępny na GitHub Pages: https://wilinskiw.github.io/bilet-system/
 - Backend jest dostępny na Renderze: https://bilet-system.onrender.com/swagger-ui/index.html
+> [!IMPORTANT]
+> Render na darmowym planie (free tier) usypia aplikację, jeśli nie jest używana. Dlatego dodałem UpTimeRobot, który regularnie pinguję serwer.
+> Może się jednak zdarzyć, że serwery Rendera przestaną działać. W takiej sytuacji, po wejściu na adres URL serwera, trzeba będzie chwilę poczekać, aż serwer się uruchomi.
 
 ### Uruchamianie lokalnie
 #### Start serwera (Spring boot)
